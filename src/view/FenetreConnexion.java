@@ -23,7 +23,7 @@ public class FenetreConnexion extends JFrame {
         setLocationRelativeTo(null);
 
         // Thème gris bleu
-        Color fond = new Color(220, 230, 240);
+        Color fond = new Color(220, 100, 240);
         Color bouton = new Color(100, 140, 180);
         Color texte = Color.WHITE;
 
