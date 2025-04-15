@@ -1,12 +1,9 @@
 package view;
 
 import controller.UtilisateurController;
-import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class FenetreConnexion extends JFrame {
     private JTextField identifiantField;
@@ -23,7 +20,7 @@ public class FenetreConnexion extends JFrame {
         setLocationRelativeTo(null);
 
         // Thème gris bleu
-        Color fond = new Color(220, 239, 240);
+        Color fond = new Color(220, 230, 240);
         Color bouton = new Color(100, 140, 180);
         Color texte = Color.WHITE;
 
