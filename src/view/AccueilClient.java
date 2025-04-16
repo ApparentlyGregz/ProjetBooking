@@ -39,8 +39,10 @@ public class AccueilClient extends JFrame {
         mainPanel.add(topBar, BorderLayout.NORTH);
 
         // ------ Zone des logements ------
-        JPanel logementsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        JPanel logementsPanel = new JPanel();
+        logementsPanel.setLayout(new BoxLayout(logementsPanel, BoxLayout.Y_AXIS));
         logementsPanel.setBackground(new Color(245, 245, 245));
+        logementsPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
         JScrollPane scrollPane = new JScrollPane(logementsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -53,7 +55,9 @@ public class AccueilClient extends JFrame {
 
         for (Logement logement : logements) {
             logementsPanel.add(new CarteLogement(logement));
+            logementsPanel.add(Box.createRigidArea(new Dimension(0, 20))); // espacement entre les cartes
         }
+
 
         setContentPane(mainPanel);
         setVisible(true);

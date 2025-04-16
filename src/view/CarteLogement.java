@@ -12,28 +12,37 @@ public class CarteLogement extends JPanel {
     private Timer timer;
 
     public CarteLogement(Logement logement) {
-        setPreferredSize(new Dimension(300, 250));
+        setPreferredSize(new Dimension(600, 180));
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         setLayout(new BorderLayout());
 
-        // Image
+        // ----- IMAGE À GAUCHE -----
         imageLabel = new JLabel();
+        imageLabel.setPreferredSize(new Dimension(250, 180));
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
-        imageLabel.setPreferredSize(new Dimension(300, 150));
-        add(imageLabel, BorderLayout.NORTH);
+        add(imageLabel, BorderLayout.WEST);
 
-        // Texte descriptif
-        JPanel textPanel = new JPanel(new GridLayout(2, 1));
-        textPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        textPanel.add(new JLabel(logement.getNom()));
-        textPanel.add(new JLabel("<html><body style='width: 280px'>" + logement.getDescription() + "</body></html>"));
+        // ----- TEXTE À DROITE -----
+        JPanel textPanel = new JPanel();
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+        textPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel titre = new JLabel(logement.getNom());
+        titre.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel desc = new JLabel("<html><body style='width:300px'>" + logement.getDescription() + "</body></html>");
+        desc.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        textPanel.add(titre);
+        textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        textPanel.add(desc);
+
         add(textPanel, BorderLayout.CENTER);
 
-        // Lancer le carrousel si au moins une image
+        // ----- CARROUSEL D’IMAGES -----
         List<String> images = logement.getImages();
         if (!images.isEmpty()) {
             updateImage(images);
-            timer = new Timer(2000, e -> {
+            timer = new Timer(2500, e -> {
                 currentImageIndex = (currentImageIndex + 1) % images.size();
                 updateImage(images);
             });
@@ -42,9 +51,13 @@ public class CarteLogement extends JPanel {
     }
 
     private void updateImage(List<String> images) {
-        String path = \"images/\" + images.get(currentImageIndex); // Relatif à src
-        ImageIcon icon = new ImageIcon(path);
-        Image scaled = icon.getImage().getScaledInstance(300, 150, Image.SCALE_SMOOTH);
-        imageLabel.setIcon(new ImageIcon(scaled));
+        try {
+            String path = "images/" + images.get(currentImageIndex);
+            ImageIcon icon = new ImageIcon(path);
+            Image scaled = icon.getImage().getScaledInstance(250, 180, Image.SCALE_SMOOTH);
+            imageLabel.setIcon(new ImageIcon(scaled));
+        } catch (Exception e) {
+            imageLabel.setText("Image non trouvée");
+        }
     }
 }

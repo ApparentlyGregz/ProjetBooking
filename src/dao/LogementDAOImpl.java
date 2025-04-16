@@ -1,7 +1,7 @@
 package dao;
 
 import model.Logement;
-import utils.Database;
+import outils.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
