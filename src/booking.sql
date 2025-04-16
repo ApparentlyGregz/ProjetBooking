@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mar. 15 avr. 2025 à 10:00
+-- Généré le : mer. 16 avr. 2025 à 12:57
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `logement` (
   `description` text,
   `date_creation` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `logement`
@@ -107,7 +107,8 @@ INSERT INTO `logement` (`id`, `nom`, `type`, `nb_personnes_max`, `superficie`, `
 (1, 'Villa Paradis', 'Villa', 6, 120, 5, 1, 1, 1, 'Une magnifique villa avec vue sur mer.', '2024-01-15'),
 (2, 'Studio Centre', 'Appartement', 2, 30, 3, 1, 0, 0, 'Studio en plein centre-ville.', '2024-03-10'),
 (3, 'Chalet Montagne', 'Chalet', 4, 60, 4, 0, 1, 1, 'Chalet en bois dans les Alpes.', '2023-12-05'),
-(4, 'Test Logement', 'Appartement', 2, 40, 3, 1, 0, 1, 'Petit logement de test.', '2025-04-01');
+(4, 'Test Logement', 'Appartement', 2, 40, 3, 1, 0, 1, 'Petit logement de test.', '2025-04-01'),
+(5, 'marin', 'Villa', 123, 123, 6, 1, 1, 1, 'marin', '2025-04-16');
 
 -- --------------------------------------------------------
 
@@ -122,16 +123,16 @@ CREATE TABLE IF NOT EXISTS `logement_image` (
   `url_image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `logement_id` (`logement_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `logement_image`
 --
 
 INSERT INTO `logement_image` (`id`, `logement_id`, `url_image`) VALUES
-(1, 4, 'https://example.com/images/test-logement.jpg'),
-(2, 1, 'https://example.com/images/villa1.jpg'),
-(3, 1, 'https://example.com/images/villa2.jpg');
+(1, 1, 'logement1_1.jpg'),
+(2, 1, 'logement1_2.jpg'),
+(3, 1, 'logement1_3.jpg');
 
 -- --------------------------------------------------------
 
@@ -269,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `identifiant` (`identifiant`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `utilisateur`
