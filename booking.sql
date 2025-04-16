@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 16 avr. 2025 à 12:57
--- Version du serveur : 8.2.0
--- Version de PHP : 8.2.13
+-- Généré le : mer. 16 avr. 2025 à 13:12
+-- Version du serveur : 9.1.0
+-- Version de PHP : 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `avis` (
   UNIQUE KEY `reservation_id` (`reservation_id`),
   KEY `logement_id` (`logement_id`),
   KEY `utilisateur_id` (`utilisateur_id`)
-) ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `avis`
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `logement_image` (
   `url_image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `logement_id` (`logement_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `logement_image`
@@ -132,7 +132,13 @@ CREATE TABLE IF NOT EXISTS `logement_image` (
 INSERT INTO `logement_image` (`id`, `logement_id`, `url_image`) VALUES
 (1, 1, 'logement1_1.jpg'),
 (2, 1, 'logement1_2.jpg'),
-(3, 1, 'logement1_3.jpg');
+(3, 1, 'logement1_3.jpg'),
+(4, 2, 'logement2_1.jpeg'),
+(5, 2, 'logement2_2.jpeg'),
+(6, 2, 'logement2_3.jpeg'),
+(7, 3, 'logement3_1.jpeg'),
+(8, 3, 'logement3_2.jpeg'),
+(9, 3, 'logement3_3.jpeg');
 
 -- --------------------------------------------------------
 
@@ -179,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `promotion` (
   `pour_anciens_clients` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `logement_id` (`logement_id`)
-) ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `promotion`
@@ -213,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `reservation` (
   KEY `logement_id` (`logement_id`),
   KEY `utilisateur_id` (`utilisateur_id`),
   KEY `promotion_id` (`promotion_id`)
-) ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `reservation`
@@ -238,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `tarif` (
   `date_fin` date NOT NULL,
   PRIMARY KEY (`id`),
   KEY `logement_id` (`logement_id`)
-) ;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `tarif`
