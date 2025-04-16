@@ -109,5 +109,31 @@ public class LogementDAOImpl implements LogementDAO {
         return false;
     }
 
+    @Override
+    public boolean modifierLogement(Logement logement) {
+        String sql = "UPDATE logement SET nom=?, description=?, superficie=?, nb_personnes_max=?, nombre_etoiles=?, wifi=?, clim=?, parking=?, type=? WHERE id=?";
+        try (Connection conn = outils.Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, logement.getNom());
+            stmt.setString(2, logement.getDescription());
+            stmt.setInt(3, logement.getSuperficie());
+            stmt.setInt(4, logement.getNbPersonnesMax());
+            stmt.setInt(5, logement.getNombreEtoiles());
+            stmt.setBoolean(6, logement.hasWifi());
+            stmt.setBoolean(7, logement.hasClim());
+            stmt.setBoolean(8, logement.hasParking());
+            stmt.setString(9, logement.getType());
+            stmt.setInt(10, logement.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
 }

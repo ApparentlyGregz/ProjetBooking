@@ -62,7 +62,16 @@ public class CarteLogementAdmin extends JPanel {
         }
 
         JButton modifierBtn = new JButton("Modifier");
+
+        modifierBtn.addActionListener(e -> {
+            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+            new FenetreModifierLogement(logement, parent);
+        });
+
+// Ajoute le bouton dans ton panel
+        rightPanel.add(modifierBtn);
         modifierBtn.setBackground(new Color(220, 220, 220));
+
 
         textPanel.add(titre);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -105,4 +114,5 @@ public class CarteLogementAdmin extends JPanel {
         Image resized = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resized);
     }
+
 }
