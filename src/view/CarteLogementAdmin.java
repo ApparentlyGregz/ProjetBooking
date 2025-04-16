@@ -6,12 +6,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class CarteLogement extends JPanel {
+public class CarteLogementAdmin extends JPanel {
     private JLabel imageLabel;
     private int currentImageIndex = 0;
     private Timer timer;
 
-    public CarteLogement(Logement logement) {
+    public CarteLogementAdmin(Logement logement) {
         setPreferredSize(new Dimension(600, 250));
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         setLayout(new BorderLayout());
@@ -61,6 +61,9 @@ public class CarteLogement extends JPanel {
             optionsPanel.add(parkingIcon);
         }
 
+        JButton modifierBtn = new JButton("Modifier");
+        modifierBtn.setBackground(new Color(220, 220, 220));
+
         textPanel.add(titre);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(desc);
@@ -68,6 +71,8 @@ public class CarteLogement extends JPanel {
         textPanel.add(infos);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(optionsPanel);
+        textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        textPanel.add(modifierBtn);
 
         rightPanel.add(textPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.CENTER);
