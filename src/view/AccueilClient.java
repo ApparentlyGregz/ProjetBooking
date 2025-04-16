@@ -23,10 +23,24 @@ public class AccueilClient extends JFrame {
         topBar.setBackground(new Color(100, 140, 180));
         topBar.setPreferredSize(new Dimension(0, 60));
 
+        // ------ Bouton déconnexion ------
+        JButton btnDeconnexion = new JButton("Déconnexion");
+        btnDeconnexion.addActionListener(e -> {
+            dispose();
+            new FenetreConnexion();
+        });
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setOpaque(false);
+        leftPanel.add(btnDeconnexion);
+
         JLabel logo = new JLabel("Booking", JLabel.LEFT);
         logo.setFont(new Font("Arial", Font.BOLD, 24));
         logo.setForeground(Color.WHITE);
         logo.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 0));
+
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        centerPanel.setOpaque(false);
+        centerPanel.add(logo);
 
         JLabel userBox = new JLabel("Connecté : " + identifiant);
         userBox.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -34,7 +48,8 @@ public class AccueilClient extends JFrame {
         userBox.setHorizontalAlignment(SwingConstants.RIGHT);
         userBox.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 20));
 
-        topBar.add(logo, BorderLayout.WEST);
+        topBar.add(leftPanel, BorderLayout.WEST);
+        topBar.add(centerPanel, BorderLayout.CENTER);
         topBar.add(userBox, BorderLayout.EAST);
         mainPanel.add(topBar, BorderLayout.NORTH);
 
@@ -57,7 +72,6 @@ public class AccueilClient extends JFrame {
             logementsPanel.add(new CarteLogement(logement));
             logementsPanel.add(Box.createRigidArea(new Dimension(0, 20))); // espacement entre les cartes
         }
-
 
         setContentPane(mainPanel);
         setVisible(true);

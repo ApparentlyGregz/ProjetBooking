@@ -7,13 +7,18 @@ import model.Logement;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class FenetreAjoutLogement extends JFrame {
 
+    private List<String> imagesSelectionnees = new ArrayList<>();
+
     public FenetreAjoutLogement(JFrame parent) {
         setTitle("Ajouter un logement");
-        setSize(400, 550);
+        setSize(400, 650);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -33,6 +38,9 @@ public class FenetreAjoutLogement extends JFrame {
         JCheckBox wifiBox = new JCheckBox("WiFi");
         JCheckBox climBox = new JCheckBox("Climatisation");
         JCheckBox parkingBox = new JCheckBox("Parking");
+
+        JButton btnAjouterImage = new JButton("Ajouter des images");
+        JLabel imagesLabel = new JLabel("Aucune image sélectionnée");
 
         JButton validerBtn = new JButton("Valider");
 
@@ -54,9 +62,28 @@ public class FenetreAjoutLogement extends JFrame {
         panel.add(parkingBox);
 
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(btnAjouterImage);
+        panel.add(imagesLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(validerBtn);
 
         add(panel);
+
+        btnAjouterImage.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setMultiSelectionEnabled(true);
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File[] files = fileChooser.getSelectedFiles();
+                imagesSelectionnees.clear();
+                StringBuilder noms = new StringBuilder();
+                for (File file : files) {
+                    imagesSelectionnees.add(file.getName());
+                    noms.append(file.getName()).append(", ");
+                }
+                imagesLabel.setText("Images : " + noms.toString());
+            }
+        });
 
         validerBtn.addActionListener((ActionEvent e) -> {
             try {
@@ -76,6 +103,7 @@ public class FenetreAjoutLogement extends JFrame {
                 logement.setHasClim(climBox.isSelected());
                 logement.setHasParking(parkingBox.isSelected());
                 logement.setType((String) typeBox.getSelectedItem());
+                logement.setImages(imagesSelectionnees);
 
                 LogementDAO dao = new LogementDAOImpl();
                 boolean success = dao.ajouterLogement(logement);

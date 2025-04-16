@@ -54,6 +54,11 @@ public class Logement {
         return images;
     }
 
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
     // Ajouter une image
     public void addImage(String imagePath) {
         images.add(imagePath);
@@ -128,6 +133,7 @@ public class Logement {
     public void setType(String type) {
         this.type = type;
     }
+
 
 }
 
