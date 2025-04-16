@@ -1,15 +1,21 @@
 package view;
 
+import dao.LogementDAO;
+import dao.LogementDAOImpl;
+import model.Logement;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class AccueilClient extends JFrame {
+
     public AccueilClient(String identifiant) {
         setTitle("Espace Client - Booking");
-        setExtendedState(JFrame.MAXIMIZED_BOTH); // Plein écran
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Panel principal en BorderLayout
+        // Panel principal
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // ------ Barre du haut ------
@@ -32,31 +38,23 @@ public class AccueilClient extends JFrame {
         topBar.add(userBox, BorderLayout.EAST);
         mainPanel.add(topBar, BorderLayout.NORTH);
 
-        // ------ Zone centrale (contenu) ------
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        // ------ Zone des logements ------
+        JPanel logementsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        logementsPanel.setBackground(new Color(245, 245, 245));
 
-        JLabel message = new JLabel("Trouvez votre logement idéal ");
-        message.setFont(new Font("Arial", Font.BOLD, 28));
-        message.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JScrollPane scrollPane = new JScrollPane(logementsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        JTextField searchBar = new JTextField();
-        searchBar.setMaximumSize(new Dimension(600, 30));
-        searchBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // ------ Récupérer les logements ------
+        LogementDAO logementDAO = new LogementDAOImpl();
+        List<Logement> logements = logementDAO.getAllLogementsAvecImages();
 
-        JButton searchButton = new JButton("Rechercher");
-        searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        for (Logement logement : logements) {
+            logementsPanel.add(new CarteLogement(logement));
+        }
 
-        centerPanel.add(message);
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        centerPanel.add(searchBar);
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        centerPanel.add(searchButton);
-
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
-
-        // Ajout du panel principal à la fenêtre
         setContentPane(mainPanel);
         setVisible(true);
     }
