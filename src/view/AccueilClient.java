@@ -11,7 +11,7 @@ import java.util.List;
 public class AccueilClient extends JFrame {
 
     public AccueilClient(String identifiant) {
-        setTitle("Espace Client - Booking");
+        setTitle("Espace Client papa- Booking");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

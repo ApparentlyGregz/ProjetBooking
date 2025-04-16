@@ -109,5 +109,4 @@ public class LogementDAOImpl implements LogementDAO {
         return false;
     }
 
-
 }
