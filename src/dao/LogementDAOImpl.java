@@ -109,6 +109,7 @@ public class LogementDAOImpl implements LogementDAO {
         return false;
     }
 
+
     @Override
     public boolean modifierLogement(Logement logement) {
         String sql = "UPDATE logement SET nom=?, description=?, superficie=?, nb_personnes_max=?, nombre_etoiles=?, wifi=?, clim=?, parking=?, type=? WHERE id=?";
