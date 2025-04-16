@@ -23,6 +23,16 @@ public class AccueilAdmin extends JFrame {
         topBar.setBackground(new Color(180, 200, 230));  // plus clair
         topBar.setPreferredSize(new Dimension(0, 60));
 
+        // ------ Bouton déconnexion ------
+        JButton btnDeconnexion = new JButton(" Déconnexion ");
+        btnDeconnexion.addActionListener(e -> {
+            dispose();
+            new FenetreConnexion();
+        });
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setOpaque(false);
+        leftPanel.add(btnDeconnexion);
+
         JLabel logo = new JLabel("Booking Admin", JLabel.LEFT);
         logo.setFont(new Font("Arial", Font.BOLD, 24));
         logo.setForeground(Color.DARK_GRAY);
@@ -38,7 +48,12 @@ public class AccueilAdmin extends JFrame {
         adminActions.add(btnAdd);
         adminActions.add(btnUsers);
 
-        topBar.add(logo, BorderLayout.WEST);
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        centerPanel.setOpaque(false);
+        centerPanel.add(logo);
+
+        topBar.add(leftPanel, BorderLayout.WEST);
+        topBar.add(centerPanel, BorderLayout.CENTER);
         topBar.add(adminActions, BorderLayout.EAST);
 
         mainPanel.add(topBar, BorderLayout.NORTH);
