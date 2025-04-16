@@ -24,7 +24,7 @@ public class AccueilAdmin extends JFrame {
         topBar.setPreferredSize(new Dimension(0, 60));
 
         // ------ Bouton déconnexion ------
-        JButton btnDeconnexion = new JButton("Déconnexion");
+        JButton btnDeconnexion = new JButton(" Déconnexion ");
         btnDeconnexion.addActionListener(e -> {
             dispose();
             new FenetreConnexion();
