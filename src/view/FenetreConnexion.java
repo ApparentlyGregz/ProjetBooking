@@ -5,8 +5,6 @@ import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class FenetreConnexion extends JFrame {
     private JTextField identifiantField;
@@ -72,10 +70,16 @@ public class FenetreConnexion extends JFrame {
             String id = identifiantField.getText();
             String mdp = new String(motDePasseField.getPassword());
             if (controller.connexion(id, mdp)) {
-                JOptionPane.showMessageDialog(this, "Connexion réussie !");
-                // TODO : ouvrir l'espace client/admin selon le type
-            } else {
-                JOptionPane.showMessageDialog(this, "Identifiants invalides.");
+                Utilisateur u = controller.getUtilisateurParIdentifiant(id);
+                JOptionPane.showMessageDialog(this, "Bienvenue " + u.getTypeCompte() + " !");
+
+                dispose(); // Ferme la fenêtre de connexion
+
+                if (u.getTypeCompte().equals("client")) {
+                    new AccueilClient(u.getIdentifiant());
+                } else if (u.getTypeCompte().equals("admin")) {
+                    new AccueilAdmin(u.getIdentifiant());
+                }
             }
         });
 

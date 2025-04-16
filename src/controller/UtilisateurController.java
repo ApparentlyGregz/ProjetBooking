@@ -14,4 +14,8 @@ public class UtilisateurController {
     public boolean inscription(Utilisateur utilisateur) {
         return dao.insert(utilisateur);
     }
+
+    public Utilisateur getUtilisateurParIdentifiant(String id) {
+        return dao.getByIdentifiant(id);
+    }
 }
