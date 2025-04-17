@@ -18,7 +18,7 @@ public class FenetreAjoutLogement extends JFrame {
 
     public FenetreAjoutLogement(JFrame parent) {
         setTitle("Ajouter un logement");
-        setSize(400, 650);
+        setSize(450, 850);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -39,31 +39,38 @@ public class FenetreAjoutLogement extends JFrame {
         JCheckBox climBox = new JCheckBox("Climatisation");
         JCheckBox parkingBox = new JCheckBox("Parking");
 
+        // Champs d'adresse
+        JTextField rueField = new JTextField();
+        JTextField villeField = new JTextField();
+        JTextField codePostalField = new JTextField();
+        JTextField paysField = new JTextField();
+        JTextField distanceCentreField = new JTextField();
+
         JButton btnAjouterImage = new JButton("Ajouter des images");
         JLabel imagesLabel = new JLabel("Aucune image sélectionnée");
 
         JButton validerBtn = new JButton("Valider");
 
-        panel.add(new JLabel("Nom :"));
-        panel.add(nomField);
-        panel.add(new JLabel("Description :"));
-        panel.add(new JScrollPane(descField));
-        panel.add(new JLabel("Superficie :"));
-        panel.add(superficieField);
-        panel.add(new JLabel("Nb personnes max :"));
-        panel.add(nbPersField);
-        panel.add(new JLabel("Nombre d'étoiles :"));
-        panel.add(etoilesField);
-        panel.add(new JLabel("Type de logement :"));
-        panel.add(typeBox);
+        // Ajout des composants
+        panel.add(new JLabel("Nom :")); panel.add(nomField);
+        panel.add(new JLabel("Description :")); panel.add(new JScrollPane(descField));
+        panel.add(new JLabel("Superficie (m²) :")); panel.add(superficieField);
+        panel.add(new JLabel("Nb personnes max :")); panel.add(nbPersField);
+        panel.add(new JLabel("Nombre d'étoiles :")); panel.add(etoilesField);
+        panel.add(new JLabel("Type de logement :")); panel.add(typeBox);
 
         panel.add(wifiBox);
         panel.add(climBox);
         panel.add(parkingBox);
 
+        panel.add(new JLabel("Rue :")); panel.add(rueField);
+        panel.add(new JLabel("Ville :")); panel.add(villeField);
+        panel.add(new JLabel("Code postal :")); panel.add(codePostalField);
+        panel.add(new JLabel("Pays :")); panel.add(paysField);
+        panel.add(new JLabel("Distance au centre (en m) :")); panel.add(distanceCentreField);
+
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(btnAjouterImage);
-        panel.add(imagesLabel);
+        panel.add(btnAjouterImage); panel.add(imagesLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(validerBtn);
 
@@ -87,7 +94,7 @@ public class FenetreAjoutLogement extends JFrame {
 
         validerBtn.addActionListener((ActionEvent e) -> {
             try {
-                if (superficieField.getText().isEmpty() || nbPersField.getText().isEmpty() || etoilesField.getText().isEmpty()) {
+                if (superficieField.getText().isEmpty() || nbPersField.getText().isEmpty() || etoilesField.getText().isEmpty() || distanceCentreField.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs numériques.", "Champs manquants", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -104,6 +111,13 @@ public class FenetreAjoutLogement extends JFrame {
                 logement.setHasParking(parkingBox.isSelected());
                 logement.setType((String) typeBox.getSelectedItem());
                 logement.setImages(imagesSelectionnees);
+
+                // Adresse
+                logement.setRue(rueField.getText());
+                logement.setVille(villeField.getText());
+                logement.setCodePostal(codePostalField.getText());
+                logement.setPays(paysField.getText());
+                logement.setDistanceCentre(Integer.parseInt(distanceCentreField.getText()));
 
                 LogementDAO dao = new LogementDAOImpl();
                 boolean success = dao.ajouterLogement(logement);
