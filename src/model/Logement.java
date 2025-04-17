@@ -8,7 +8,7 @@ public class Logement {
 
     private String rue, ville, codePostal, pays;
     private int distanceCentre;
-
+    private int nbChambres;
     private Adresse adresse;
     private boolean hasWifi;
     private String type;
@@ -160,6 +160,15 @@ public class Logement {
     public int getDistanceCentre() { return distanceCentre; }
     public void setDistanceCentre(int distanceCentre) { this.distanceCentre = distanceCentre; }
 
+
+
+    public int getNbChambres() {
+        return nbChambres;
+    }
+
+    public void setNbChambres(int nbChambres) {
+        this.nbChambres = nbChambres;
+    }
 
 
 

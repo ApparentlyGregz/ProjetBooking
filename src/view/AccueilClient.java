@@ -1,6 +1,5 @@
 package view;
 
-import dao.LogementDAO;
 import dao.LogementDAOImpl;
 import model.Logement;
 
@@ -9,6 +8,8 @@ import java.awt.*;
 import java.util.List;
 
 public class AccueilClient extends JFrame {
+
+    private JPanel logementsPanel;
 
     public AccueilClient(String identifiant) {
         setTitle("Espace Client - Booking");
@@ -69,6 +70,7 @@ public class AccueilClient extends JFrame {
                     destinationField.setForeground(Color.BLACK);
                 }
             }
+
             public void focusLost(java.awt.event.FocusEvent e) {
                 if (destinationField.getText().isEmpty()) {
                     destinationField.setText("Où allez-vous ?");
@@ -81,7 +83,6 @@ public class AccueilClient extends JFrame {
         dateArrivee.setEditor(new JSpinner.DateEditor(dateArrivee, "dd/MM/yyyy"));
         JSpinner dateDepart = new JSpinner(new SpinnerDateModel());
         dateDepart.setEditor(new JSpinner.DateEditor(dateDepart, "dd/MM/yyyy"));
-
         JSpinner nbPersonnes = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
         JSpinner nbChambres = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
 
@@ -103,7 +104,7 @@ public class AccueilClient extends JFrame {
         mainPanel.add(recherchePanel, BorderLayout.BEFORE_FIRST_LINE);
 
         // ------ ZONE LOGEMENTS ------
-        JPanel logementsPanel = new JPanel();
+        logementsPanel = new JPanel();
         logementsPanel.setLayout(new BoxLayout(logementsPanel, BoxLayout.Y_AXIS));
         logementsPanel.setBackground(new Color(245, 245, 245));
         logementsPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
@@ -113,16 +114,36 @@ public class AccueilClient extends JFrame {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Récupération des logements
-        LogementDAO logementDAO = new LogementDAOImpl();
-        List<Logement> logements = logementDAO.getAllLogementsAvecImages();
+        // Récupération initiale
+        afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
 
+        // ------ Action de recherche ------
+        btnRechercher.addActionListener(e -> {
+            String ville = destinationField.getText().trim();
+            int nbPersonnesValue = (int) nbPersonnes.getValue();
+            int nbChambresValue = (int) nbChambres.getValue();
+
+            if (!ville.isEmpty() && !ville.equals("Où allez-vous ?")) {
+                // Recherche avec les critères (ville, nombre de personnes et chambres)
+                List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesValue, nbChambresValue);
+                afficherLogements(resultats);
+            } else {
+                // Recherche sans critère de ville, affiche tous les logements
+                afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
+            }
+        });
+
+        setContentPane(mainPanel);
+        setVisible(true);
+    }
+
+    private void afficherLogements(List<Logement> logements) {
+        logementsPanel.removeAll();
         for (Logement logement : logements) {
             logementsPanel.add(new CarteLogement(logement));
             logementsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
-
-        setContentPane(mainPanel);
-        setVisible(true);
+        logementsPanel.revalidate();
+        logementsPanel.repaint();
     }
 }
