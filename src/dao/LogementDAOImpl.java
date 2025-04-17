@@ -13,10 +13,14 @@ public class LogementDAOImpl implements LogementDAO {
     public List<Logement> getAllLogementsAvecImages() {
         List<Logement> logements = new ArrayList<>();
         String sql = "SELECT l.id, l.nom, l.description, l.superficie, l.nb_personnes_max, l.nombre_etoiles, " +
-                "l.date_creation, l.wifi, l.clim, l.parking, i.url_image " +
+                "l.date_creation, l.wifi, l.clim, l.parking, l.type, i.url_image, " +
+                "a.rue, a.ville, a.code_postal, a.pays, a.distance_centre " +
                 "FROM logement l " +
                 "LEFT JOIN logement_image i ON l.id = i.logement_id " +
+                "LEFT JOIN adresse a ON l.id = a.logement_id " +
                 "ORDER BY l.id";
+
+
 
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -29,6 +33,12 @@ public class LogementDAOImpl implements LogementDAO {
                 int id = rs.getInt("id");
                 if (id != currentId) {
                     logement = new Logement();
+                    logement.setRue(rs.getString("rue"));
+                    logement.setVille(rs.getString("ville"));
+                    logement.setCodePostal(rs.getString("code_postal"));
+                    logement.setPays(rs.getString("pays"));
+                    logement.setDistanceCentre(rs.getInt("distance_centre"));
+
                     logement.setId(id);
                     logement.setNom(rs.getString("nom"));
                     logement.setDescription(rs.getString("description"));
@@ -134,6 +144,7 @@ public class LogementDAOImpl implements LogementDAO {
             return false;
         }
     }
+
 
 
 
