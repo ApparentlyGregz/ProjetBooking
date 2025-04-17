@@ -71,6 +71,16 @@ public class CarteLogement extends JPanel {
         textPanel.add(desc);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(infos);
+        // Adresse
+        JLabel adresseLabel = new JLabel("<html><b>Adresse :</b> " + logement.getRue() + ", "
+                + logement.getCodePostal() + " " + logement.getVille() + " (" + logement.getPays() + ")</html>");
+        adresseLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        textPanel.add(adresseLabel);
+
+        JLabel distanceLabel = new JLabel("À " + logement.getDistanceCentre() + " m du centre");
+        distanceLabel.setFont(new Font("Arial", Font.ITALIC, 11));
+        textPanel.add(distanceLabel);
+
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(optionsPanel);
 

@@ -6,6 +6,10 @@ import java.util.Date;
 
 public class Logement {
 
+    private String rue, ville, codePostal, pays;
+    private int distanceCentre;
+
+    private Adresse adresse;
     private boolean hasWifi;
     private String type;
     private boolean hasClim;
@@ -133,6 +137,32 @@ public class Logement {
     public void setType(String type) {
         this.type = type;
     }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
+    public String getRue() { return rue; }
+    public void setRue(String rue) { this.rue = rue; }
+
+    public String getVille() { return ville; }
+    public void setVille(String ville) { this.ville = ville; }
+
+    public String getCodePostal() { return codePostal; }
+    public void setCodePostal(String codePostal) { this.codePostal = codePostal; }
+
+    public String getPays() { return pays; }
+    public void setPays(String pays) { this.pays = pays; }
+
+    public int getDistanceCentre() { return distanceCentre; }
+    public void setDistanceCentre(int distanceCentre) { this.distanceCentre = distanceCentre; }
+
+
+
+
 
 
 }
