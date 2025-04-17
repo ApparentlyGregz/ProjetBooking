@@ -4,6 +4,8 @@ import model.Logement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class CarteLogement extends JPanel {
@@ -15,6 +17,9 @@ public class CarteLogement extends JPanel {
         setPreferredSize(new Dimension(600, 250));
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         setLayout(new BorderLayout());
+
+        // Curseur main pour indiquer que c’est cliquable
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Image à gauche
         imageLabel = new JLabel();
@@ -82,6 +87,14 @@ public class CarteLogement extends JPanel {
             });
             timer.start();
         }
+
+        // 🎯 Clic sur la carte => ouvrir la page de détails
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new PageLogement(logement);
+            }
+        });
     }
 
     private void updateImage(List<String> images) {
