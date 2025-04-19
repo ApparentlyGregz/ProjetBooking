@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 16 avr. 2025 à 13:12
--- Version du serveur : 9.1.0
--- Version de PHP : 8.3.14
+-- Généré le : sam. 19 avr. 2025 à 13:21
+-- Version du serveur : 8.2.0
+-- Version de PHP : 8.2.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -43,10 +43,11 @@ CREATE TABLE IF NOT EXISTS `adresse` (
 --
 
 INSERT INTO `adresse` (`logement_id`, `rue`, `ville`, `code_postal`, `pays`, `distance_centre`) VALUES
-(1, '1 rue du Paradis', 'Nice', '06000', 'France', 500),
+(1, '1 rue du Paradis', 'Clamart', '06000', 'France', 500),
 (2, '12 avenue des Lilas', 'Paris', '75010', 'France', 100),
 (3, 'Route des neiges', 'Chamonix', '74400', 'France', 2000),
-(4, 'Test Rue', 'TestVille', '00000', 'France', 150);
+(4, 'Test Rue', 'TestVille', '00000', 'France', 150),
+(6, '1 de la plagne', 'maudon', '92000', 'France', 200);
 
 -- --------------------------------------------------------
 
@@ -96,19 +97,20 @@ CREATE TABLE IF NOT EXISTS `logement` (
   `parking` tinyint(1) DEFAULT '0',
   `description` text,
   `date_creation` date DEFAULT NULL,
+  `nb_chambres` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `logement`
 --
 
-INSERT INTO `logement` (`id`, `nom`, `type`, `nb_personnes_max`, `superficie`, `nombre_etoiles`, `wifi`, `clim`, `parking`, `description`, `date_creation`) VALUES
-(1, 'Villa Paradis', 'Villa', 6, 120, 5, 1, 1, 1, 'Une magnifique villa avec vue sur mer.', '2024-01-15'),
-(2, 'Studio Centre', 'Appartement', 2, 30, 3, 1, 0, 0, 'Studio en plein centre-ville.', '2024-03-10'),
-(3, 'Chalet Montagne', 'Chalet', 4, 60, 4, 0, 1, 1, 'Chalet en bois dans les Alpes.', '2023-12-05'),
-(4, 'Test Logement', 'Appartement', 2, 40, 3, 1, 0, 1, 'Petit logement de test.', '2025-04-01'),
-(5, 'marin', 'Villa', 123, 123, 6, 1, 1, 1, 'marin', '2025-04-16');
+INSERT INTO `logement` (`id`, `nom`, `type`, `nb_personnes_max`, `superficie`, `nombre_etoiles`, `wifi`, `clim`, `parking`, `description`, `date_creation`, `nb_chambres`) VALUES
+(1, 'Villa Paradis ', 'Villa', 5, 120, 5, 1, 1, 1, 'Une magnifique villa avec vue sur mer. Avec piscine', '2024-01-15', NULL),
+(2, 'Studio Centre', 'Appartement', 2, 30, 3, 1, 0, 0, 'Studio en plein centre-ville.', '2024-03-10', NULL),
+(3, 'Chalet Montagne', 'Chalet', 4, 60, 4, 0, 1, 1, 'Chalet en bois dans les Alpes.', '2023-12-05', NULL),
+(4, 'Test Logement', 'Appartement', 2, 40, 3, 1, 0, 1, 'Petit logement de test.', '2025-04-01', NULL),
+(6, 'greg', 'Studio', 1, 10, 2, 0, 1, 0, 'Poule', '2025-04-17', NULL);
 
 -- --------------------------------------------------------
 
@@ -123,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `logement_image` (
   `url_image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `logement_id` (`logement_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `logement_image`
@@ -138,7 +140,8 @@ INSERT INTO `logement_image` (`id`, `logement_id`, `url_image`) VALUES
 (6, 2, 'logement2_3.jpeg'),
 (7, 3, 'logement3_1.jpeg'),
 (8, 3, 'logement3_2.jpeg'),
-(9, 3, 'logement3_3.jpeg');
+(9, 3, 'logement3_3.jpeg'),
+(10, 6, 'logement2_1.jpeg');
 
 -- --------------------------------------------------------
 
