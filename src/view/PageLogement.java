@@ -4,7 +4,9 @@ import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.IDateEvaluator;
 import dao.ReservationDAO;
 import dao.ReservationDAOImpl;
+import dao.TarifDAOImpl;
 import model.Logement;
+import model.Reservation;
 import model.Utilisateur;
 
 import javax.swing.*;
@@ -12,6 +14,7 @@ import java.awt.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PageLogement extends JFrame {
     private int currentImageIndex = 0;
@@ -200,16 +203,34 @@ public class PageLogement extends JFrame {
                         return;
                     }
 
-                    JOptionPane.showMessageDialog(this,
-                            "Réservation confirmée !\n" +
-                                    "Logement ID : " + logement.getId() +
-                                    "\nUtilisateur ID : " + utilisateur.getId() +
-                                    "\nDu : " + dateDebutSelectionnee +
-                                    "\nAu : " + dateFinSelectionnee +
-                                    "\nAdultes : " + nbAdultes +
-                                    "\nEnfants : " + nbEnfants);
+                    long diffMillis = dateFinSelectionnee.getTime() - dateDebutSelectionnee.getTime();
+                    long nbNuits = TimeUnit.DAYS.convert(diffMillis, TimeUnit.MILLISECONDS);
+                    TarifDAOImpl tarifDAO = new TarifDAOImpl();
+                    double prixParNuit = tarifDAO.getPrixParNuitPourPeriode(logement.getId(), dateDebutSelectionnee);
+                    double total = prixParNuit * nbNuits;
 
-                    // TODO: calcul du prix et insertion en base
+                    Reservation reservation = new Reservation();
+                    reservation.setLogementId(logement.getId());
+                    reservation.setUtilisateurId(utilisateur.getId());
+                    reservation.setDateDebut(dateDebutSelectionnee);
+                    reservation.setDateFin(dateFinSelectionnee);
+                    reservation.setNombreAdultes(nbAdultes);
+                    reservation.setNombreEnfants(nbEnfants);
+                    reservation.setStatut("en_attente");
+                    reservation.setPrixTotal(total);
+                    reservation.setPromotionId(null);
+
+                    boolean inserted = new ReservationDAOImpl().insertReservation(reservation);
+
+                    if (inserted) {
+                        JOptionPane.showMessageDialog(this,
+                                "Réservation enregistrée avec succès !\n" +
+                                        "Total à payer : " + total + " €");
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                                "Erreur lors de l'enregistrement de la réservation.",
+                                "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
 
             } else {
