@@ -58,6 +58,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                 u.setMdp(rs.getString("mdp"));
                 u.setEmail(rs.getString("email"));
                 u.setTypeCompte(rs.getString("type_compte"));
+                u.setAncienClient(rs.getInt("ancien_client"));
                 return u;
             }
         } catch (SQLException e) {
