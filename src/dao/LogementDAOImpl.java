@@ -248,14 +248,26 @@ public class LogementDAOImpl implements LogementDAO {
                 "FROM logement l " +
                 "LEFT JOIN logement_image i ON l.id = i.logement_id " +
                 "LEFT JOIN adresse a ON l.id = a.logement_id " +
-                "WHERE a.ville LIKE ? AND l.nb_personnes_max >= ? " +  // Retirer la condition sur nb_chambres
-                "ORDER BY l.id";
+                "WHERE l.nb_personnes_max >= ? AND l.nb_chambres >= ?";  // Filtrage par personnes et chambres seulement
+
+        // Ajout condition pour la ville si elle n'est pas vide
+        if (!ville.isEmpty()) {
+            sql += " AND a.ville LIKE ?";
+        }
+
+        sql += " ORDER BY l.id";  // Trier les résultats
 
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, "%" + ville + "%");
-            stmt.setInt(2, nbPersonnes);
+            stmt.setInt(1, nbPersonnes);  // Appliquer le filtre sur le nombre de personnes
+            stmt.setInt(2, nbChambres);   // Appliquer le filtre sur le nombre de chambres
+
+            // Ajouter la condition pour la ville, si spécifiée
+            if (!ville.isEmpty()) {
+                stmt.setString(3, "%" + ville + "%");
+            }
+
             ResultSet rs = stmt.executeQuery();
 
             int currentId = -1;
@@ -299,6 +311,7 @@ public class LogementDAOImpl implements LogementDAO {
 
         return logements;
     }
+
 
 
 }

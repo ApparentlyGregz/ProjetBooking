@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : sam. 19 avr. 2025 à 13:21
+-- Généré le : dim. 20 avr. 2025 à 13:53
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -106,11 +106,11 @@ CREATE TABLE IF NOT EXISTS `logement` (
 --
 
 INSERT INTO `logement` (`id`, `nom`, `type`, `nb_personnes_max`, `superficie`, `nombre_etoiles`, `wifi`, `clim`, `parking`, `description`, `date_creation`, `nb_chambres`) VALUES
-(1, 'Villa Paradis ', 'Villa', 5, 120, 5, 1, 1, 1, 'Une magnifique villa avec vue sur mer. Avec piscine', '2024-01-15', NULL),
-(2, 'Studio Centre', 'Appartement', 2, 30, 3, 1, 0, 0, 'Studio en plein centre-ville.', '2024-03-10', NULL),
-(3, 'Chalet Montagne', 'Chalet', 4, 60, 4, 0, 1, 1, 'Chalet en bois dans les Alpes.', '2023-12-05', NULL),
-(4, 'Test Logement', 'Appartement', 2, 40, 3, 1, 0, 1, 'Petit logement de test.', '2025-04-01', NULL),
-(6, 'greg', 'Studio', 1, 10, 2, 0, 1, 0, 'Poule', '2025-04-17', NULL);
+(1, 'Villa Paradis ', 'Villa', 5, 120, 5, 1, 1, 1, 'Une magnifique villa avec vue sur mer. Avec piscine', '2024-01-15', 4),
+(2, 'Studio Centre', 'Appartement', 2, 30, 3, 1, 0, 0, 'Studio en plein centre-ville.', '2024-03-10', 2),
+(3, 'Chalet Montagne', 'Chalet', 4, 60, 4, 0, 1, 1, 'Chalet en bois dans les Alpes.', '2023-12-05', 2),
+(4, 'Test Logement', 'Appartement', 2, 40, 3, 1, 0, 1, 'Petit logement de test.', '2025-04-01', 2),
+(6, 'greg', 'Studio', 1, 10, 2, 0, 1, 0, 'Poule', '2025-04-17', 1);
 
 -- --------------------------------------------------------
 

@@ -1,5 +1,6 @@
 package view;
 
+import dao.LogementDAO;
 import dao.LogementDAOImpl;
 import model.Logement;
 
@@ -120,18 +121,17 @@ public class AccueilClient extends JFrame {
         // ------ Action de recherche ------
         btnRechercher.addActionListener(e -> {
             String ville = destinationField.getText().trim();
-            int nbPersonnesValue = (int) nbPersonnes.getValue();
-            int nbChambresValue = (int) nbChambres.getValue();
+            int nbPersonnesVal = (int) nbPersonnes.getValue();
+            int nbChambresVal = (int) nbChambres.getValue();
 
-            if (!ville.isEmpty() && !ville.equals("Où allez-vous ?")) {
-                // Recherche avec les critères (ville, nombre de personnes et chambres)
-                List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesValue, nbChambresValue);
-                afficherLogements(resultats);
-            } else {
-                // Recherche sans critère de ville, affiche tous les logements
-                afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
-            }
+            // Applique les filtres sur la ville, le nombre de personnes et de chambres
+            List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesVal, nbChambresVal);
+
+            // Affichage des logements filtrés sans fermer la fenêtre
+            afficherLogements(resultats);
         });
+
+
 
         setContentPane(mainPanel);
         setVisible(true);
