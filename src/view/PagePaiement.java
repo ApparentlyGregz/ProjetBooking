@@ -25,6 +25,9 @@ public class PagePaiement extends JFrame {
             return;
         }
 
+        boolean isAncienClient = utilisateur.getAncienClient() == 1;
+        double reduction = isAncienClient ? 0.30 : 0.0;
+
         ReservationDAOImpl reservationDAO = new ReservationDAOImpl();
         List<Reservation> reservations = reservationDAO.getReservationsEnAttente(utilisateur.getId());
 
@@ -32,6 +35,10 @@ public class PagePaiement extends JFrame {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 
         for (Reservation r : reservations) {
+            double prixFinal = r.getPrixTotal();
+            if (isAncienClient) {
+                prixFinal *= (1 - reduction);
+            }
             model.addRow(new Object[]{
                     r.getId(),
                     r.getLogementId(),
@@ -39,7 +46,7 @@ public class PagePaiement extends JFrame {
                     r.getDateFin(),
                     r.getNombreAdultes(),
                     r.getNombreEnfants(),
-                    r.getPrixTotal(),
+                    prixFinal,
                     r.getStatut()
             });
         }
@@ -57,6 +64,25 @@ public class PagePaiement extends JFrame {
                 JOptionPane.showMessageDialog(this, "Veuillez sélectionner au moins une réservation.");
                 return;
             }
+
+            double totalAvant = 0;
+            for (int row : selectedRows) {
+                double prix = (double) table.getValueAt(row, 6);
+                if (isAncienClient) {
+                    prix /= (1 - reduction); // pour retrouver le prix original
+                }
+                totalAvant += prix;
+            }
+            double montantReduction = isAncienClient ? totalAvant * reduction : 0;
+            double totalApres = totalAvant - montantReduction;
+
+            String message = String.format(
+                    "Montant total avant réduction : %.2f €\nRéduction appliquée : %.2f €\nMontant final à payer : %.2f €",
+                    totalAvant, montantReduction, totalApres
+            );
+
+            int infoConfirm = JOptionPane.showConfirmDialog(this, message + "\n\nContinuer vers le paiement ?", "Détail du paiement", JOptionPane.OK_CANCEL_OPTION);
+            if (infoConfirm != JOptionPane.OK_OPTION) return;
 
             JPanel paiementPanel = new JPanel(new GridLayout(4, 2, 10, 10));
             JTextField numeroCarte = new JTextField();
@@ -89,7 +115,9 @@ public class PagePaiement extends JFrame {
                     int reservationId = (int) table.getValueAt(row, 0);
                     reservationDAO.confirmerReservation(reservationId);
                 }
-                JOptionPane.showMessageDialog(this, "Paiement effectué avec succès !");
+
+                JOptionPane.showMessageDialog(this, "Paiement effectué avec succès ! " +
+                        (isAncienClient ? "(Réduction de 30% appliquée)" : ""));
                 dispose();
             }
         });
