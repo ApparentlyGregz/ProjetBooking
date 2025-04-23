@@ -1,6 +1,7 @@
 package view;
 
 import model.Logement;
+import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,22 +13,21 @@ public class CarteLogement extends JPanel {
     private JLabel imageLabel;
     private int currentImageIndex = 0;
     private Timer timer;
+    private Utilisateur utilisateur;
 
-    public CarteLogement(Logement logement) {
+    public CarteLogement(Logement logement, Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+
         setPreferredSize(new Dimension(600, 250));
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         setLayout(new BorderLayout());
-
-        // Curseur main pour indiquer que c’est cliquable
         this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Image à gauche
         imageLabel = new JLabel();
         imageLabel.setPreferredSize(new Dimension(250, 250));
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         add(imageLabel, BorderLayout.WEST);
 
-        // Texte à droite
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());
         rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
@@ -71,7 +71,7 @@ public class CarteLogement extends JPanel {
         textPanel.add(desc);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(infos);
-        // Adresse
+
         JLabel adresseLabel = new JLabel("<html><b>Adresse :</b> " + logement.getRue() + ", "
                 + logement.getCodePostal() + " " + logement.getVille() + " (" + logement.getPays() + ")</html>");
         adresseLabel.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -87,7 +87,6 @@ public class CarteLogement extends JPanel {
         rightPanel.add(textPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.CENTER);
 
-        // Carrousel d’images
         List<String> images = logement.getImages();
         if (!images.isEmpty()) {
             updateImage(images);
@@ -98,11 +97,10 @@ public class CarteLogement extends JPanel {
             timer.start();
         }
 
-        // 🎯 Clic sur la carte => ouvrir la page de détails
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new PageLogement(logement);
+                new PageLogement(logement, utilisateur);
             }
         });
     }

@@ -2,7 +2,9 @@ package view;
 
 import dao.LogementDAO;
 import dao.LogementDAOImpl;
+import dao.UtilisateurDAOImpl;
 import model.Logement;
+import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,13 +13,18 @@ import java.util.List;
 public class AccueilClient extends JFrame {
 
     private JPanel logementsPanel;
+    private Utilisateur utilisateur;
 
     public AccueilClient(String identifiant) {
         setTitle("Espace Client - Booking");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        UtilisateurDAOImpl utilisateurDAO = new UtilisateurDAOImpl();
+        this.utilisateur = utilisateurDAO.getByIdentifiant(identifiant);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         // ------ BARRE DU HAUT ------
         JPanel topBar = new JPanel(new BorderLayout());
@@ -40,6 +47,12 @@ public class AccueilClient extends JFrame {
         userBox.setForeground(Color.WHITE);
         userBox.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 20));
 
+        JButton btnPaiement = new JButton("Paiement");
+        btnPaiement.setBackground(new Color(230, 240, 250));
+        btnPaiement.addActionListener(e -> {
+            new PagePaiement(identifiant);
+        });
+
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         leftPanel.setOpaque(false);
         leftPanel.add(btnDeconnexion);
@@ -48,10 +61,15 @@ public class AccueilClient extends JFrame {
         centerPanel.setOpaque(false);
         centerPanel.add(logo);
 
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.setOpaque(false);
+        rightPanel.add(btnPaiement);
+        rightPanel.add(userBox);
+
         topBar.add(leftPanel, BorderLayout.WEST);
         topBar.add(centerPanel, BorderLayout.CENTER);
-        topBar.add(userBox, BorderLayout.EAST);
-        mainPanel.add(topBar, BorderLayout.NORTH);
+        topBar.add(rightPanel, BorderLayout.EAST);
+        mainPanel.add(topBar);
 
         // ------ ZONE RECHERCHE ------
         JPanel recherchePanel = new JPanel();
@@ -102,7 +120,7 @@ public class AccueilClient extends JFrame {
         recherchePanel.add(nbChambres);
         recherchePanel.add(btnRechercher);
 
-        mainPanel.add(recherchePanel, BorderLayout.BEFORE_FIRST_LINE);
+        mainPanel.add(recherchePanel);
 
         // ------ ZONE LOGEMENTS ------
         logementsPanel = new JPanel();
@@ -113,7 +131,7 @@ public class AccueilClient extends JFrame {
         JScrollPane scrollPane = new JScrollPane(logementsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(scrollPane);
 
         // Récupération initiale
         afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
@@ -129,6 +147,17 @@ public class AccueilClient extends JFrame {
 
             // Affichage des logements filtrés sans fermer la fenêtre
             afficherLogements(resultats);
+
+            int nbPersonnesValue = (int) nbPersonnes.getValue();
+            int nbChambresValue = (int) nbChambres.getValue();
+
+            if (!ville.isEmpty() && !ville.equals("Où allez-vous ?")) {
+                List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesValue, nbChambresValue);
+                afficherLogements(resultats);
+            } else {
+                afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
+            }
+
         });
 
 
@@ -140,7 +169,7 @@ public class AccueilClient extends JFrame {
     private void afficherLogements(List<Logement> logements) {
         logementsPanel.removeAll();
         for (Logement logement : logements) {
-            logementsPanel.add(new CarteLogement(logement));
+            logementsPanel.add(new CarteLogement(logement, utilisateur));
             logementsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
         logementsPanel.revalidate();

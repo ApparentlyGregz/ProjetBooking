@@ -62,7 +62,7 @@ public class FenetreConnexion extends JFrame {
         gbc.gridwidth = 1;
 
         gbc.gridx = 0; gbc.gridy = y;
-        formPanel.add(new JLabel("Identifiant :"), gbc);
+        formPanel.add(new JLabel("Identifiant : "), gbc);
         gbc.gridx = 1;
         formPanel.add(identifiantField, gbc);
         y++;
