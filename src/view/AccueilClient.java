@@ -1,5 +1,6 @@
 package view;
 
+import dao.LogementDAO;
 import dao.LogementDAOImpl;
 import dao.UtilisateurDAOImpl;
 import model.Logement;
@@ -138,6 +139,15 @@ public class AccueilClient extends JFrame {
         // ------ Action de recherche ------
         btnRechercher.addActionListener(e -> {
             String ville = destinationField.getText().trim();
+            int nbPersonnesVal = (int) nbPersonnes.getValue();
+            int nbChambresVal = (int) nbChambres.getValue();
+
+            // Applique les filtres sur la ville, le nombre de personnes et de chambres
+            List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesVal, nbChambresVal);
+
+            // Affichage des logements filtrés sans fermer la fenêtre
+            afficherLogements(resultats);
+
             int nbPersonnesValue = (int) nbPersonnes.getValue();
             int nbChambresValue = (int) nbChambres.getValue();
 
@@ -147,7 +157,10 @@ public class AccueilClient extends JFrame {
             } else {
                 afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
             }
+
         });
+
+
 
         setContentPane(mainPanel);
         setVisible(true);
