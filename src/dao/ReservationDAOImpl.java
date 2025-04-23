@@ -83,4 +83,45 @@ public class ReservationDAOImpl implements ReservationDAO {
             return false;
         }
     }
+
+    public List<Reservation> getReservationsEnAttente(int utilisateurId) {
+        List<Reservation> list = new ArrayList<>();
+        String sql = "SELECT * FROM reservation WHERE utilisateur_id = ? AND statut = 'en_attente'";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, utilisateurId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Reservation r = new Reservation();
+                r.setId(rs.getInt("id"));
+                r.setLogementId(rs.getInt("logement_id"));
+                r.setUtilisateurId(rs.getInt("utilisateur_id"));
+                r.setDateDebut(rs.getDate("date_debut"));
+                r.setDateFin(rs.getDate("date_fin"));
+                r.setNombreAdultes(rs.getInt("nombre_adultes"));
+                r.setNombreEnfants(rs.getInt("nombre_enfants"));
+                r.setStatut(rs.getString("statut"));
+                r.setPrixTotal(rs.getDouble("prix_total"));
+                r.setPromotionId((Integer) rs.getObject("promotion_id"));
+                list.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public boolean confirmerReservation(int reservationId) {
+        String sql = "UPDATE reservation SET statut = 'confirmée' WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, reservationId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

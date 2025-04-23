@@ -19,10 +19,11 @@ public class AccueilClient extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Récupération de l'utilisateur connecté
-        this.utilisateur = new UtilisateurDAOImpl().getByIdentifiant(identifiant);
+        UtilisateurDAOImpl utilisateurDAO = new UtilisateurDAOImpl();
+        this.utilisateur = utilisateurDAO.getByIdentifiant(identifiant);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         // ------ BARRE DU HAUT ------
         JPanel topBar = new JPanel(new BorderLayout());
@@ -45,6 +46,12 @@ public class AccueilClient extends JFrame {
         userBox.setForeground(Color.WHITE);
         userBox.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 20));
 
+        JButton btnPaiement = new JButton("Paiement");
+        btnPaiement.setBackground(new Color(230, 240, 250));
+        btnPaiement.addActionListener(e -> {
+            new PagePaiement(identifiant);
+        });
+
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         leftPanel.setOpaque(false);
         leftPanel.add(btnDeconnexion);
@@ -53,10 +60,15 @@ public class AccueilClient extends JFrame {
         centerPanel.setOpaque(false);
         centerPanel.add(logo);
 
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.setOpaque(false);
+        rightPanel.add(btnPaiement);
+        rightPanel.add(userBox);
+
         topBar.add(leftPanel, BorderLayout.WEST);
         topBar.add(centerPanel, BorderLayout.CENTER);
-        topBar.add(userBox, BorderLayout.EAST);
-        mainPanel.add(topBar, BorderLayout.NORTH);
+        topBar.add(rightPanel, BorderLayout.EAST);
+        mainPanel.add(topBar);
 
         // ------ ZONE RECHERCHE ------
         JPanel recherchePanel = new JPanel();
@@ -107,7 +119,7 @@ public class AccueilClient extends JFrame {
         recherchePanel.add(nbChambres);
         recherchePanel.add(btnRechercher);
 
-        mainPanel.add(recherchePanel, BorderLayout.BEFORE_FIRST_LINE);
+        mainPanel.add(recherchePanel);
 
         // ------ ZONE LOGEMENTS ------
         logementsPanel = new JPanel();
@@ -118,7 +130,7 @@ public class AccueilClient extends JFrame {
         JScrollPane scrollPane = new JScrollPane(logementsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(scrollPane);
 
         // Récupération initiale
         afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
