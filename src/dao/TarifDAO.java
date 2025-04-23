@@ -9,5 +9,5 @@ public interface TarifDAO {
      * @param dateDebut Date d'arrivée de la réservation
      * @return prix par nuit applicable
      */
-    double getPrixParNuitPourPeriode(int logementId, Date dateDebut);
+    double getPrixParNuit(int logementId);
 }

@@ -85,6 +85,25 @@ public class CarteLogement extends JPanel {
         textPanel.add(optionsPanel);
 
         rightPanel.add(textPanel, BorderLayout.CENTER);
+
+        // === PRIX AU CENTRE DROITE ===
+        dao.TarifDAO tarifDAO = new dao.TarifDAOImpl();
+        double prix = tarifDAO.getPrixParNuit(logement.getId());
+
+        JPanel prixPanel = new JPanel();
+        prixPanel.setLayout(new BoxLayout(prixPanel, BoxLayout.Y_AXIS));
+        prixPanel.setPreferredSize(new Dimension(120, 250));
+        prixPanel.setBackground(Color.WHITE);
+
+        prixPanel.add(Box.createVerticalGlue()); // espace haut
+        JLabel prixLabel = new JLabel(prix + " € / nuit");
+        prixLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        prixLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        prixPanel.add(prixLabel);
+        prixPanel.add(Box.createVerticalGlue()); // espace bas
+
+        add(prixPanel, BorderLayout.EAST);
+
         add(rightPanel, BorderLayout.CENTER);
 
         List<String> images = logement.getImages();

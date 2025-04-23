@@ -206,7 +206,7 @@ public class PageLogement extends JFrame {
                     long diffMillis = dateFinSelectionnee.getTime() - dateDebutSelectionnee.getTime();
                     long nbNuits = TimeUnit.DAYS.convert(diffMillis, TimeUnit.MILLISECONDS);
                     TarifDAOImpl tarifDAO = new TarifDAOImpl();
-                    double prixParNuit = tarifDAO.getPrixParNuitPourPeriode(logement.getId(), dateDebutSelectionnee);
+                    double prixParNuit = tarifDAO.getPrixParNuit(logement.getId());
                     double total = prixParNuit * nbNuits;
 
                     Reservation reservation = new Reservation();
