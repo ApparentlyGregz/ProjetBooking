@@ -244,27 +244,30 @@ public class LogementDAOImpl implements LogementDAO {
     @Override
     public List<Logement> rechercherLogements(String ville, int nbPersonnes, int nbChambres) {
         List<Logement> logements = new ArrayList<>();
+
+        // Construire la requête SQL
         String sql = "SELECT l.*, i.url_image, a.rue, a.ville, a.code_postal, a.pays, a.distance_centre " +
                 "FROM logement l " +
                 "LEFT JOIN logement_image i ON l.id = i.logement_id " +
                 "LEFT JOIN adresse a ON l.id = a.logement_id " +
-                "WHERE l.nb_personnes_max >= ? AND l.nb_chambres >= ?";  // Filtrage par personnes et chambres seulement
+                "WHERE l.nb_personnes_max >= ? AND l.nb_chambres >= ?";  // Applique le filtre sur le nombre de personnes et de chambres
 
-        // Ajout condition pour la ville si elle n'est pas vide
-        if (!ville.isEmpty()) {
+        // Ajouter la condition de la ville si elle est renseignée
+        if (ville != null && !ville.isEmpty()) {
             sql += " AND a.ville LIKE ?";
         }
 
-        sql += " ORDER BY l.id";  // Trier les résultats
+        sql += " ORDER BY l.id";  // Trier les résultats par ID (vous pouvez changer ce critère si nécessaire)
 
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, nbPersonnes);  // Appliquer le filtre sur le nombre de personnes
-            stmt.setInt(2, nbChambres);   // Appliquer le filtre sur le nombre de chambres
+            // Appliquer les filtres sur le nombre de personnes et le nombre de chambres
+            stmt.setInt(1, nbPersonnes);
+            stmt.setInt(2, nbChambres);
 
-            // Ajouter la condition pour la ville, si spécifiée
-            if (!ville.isEmpty()) {
+            // Ajouter la condition sur la ville si nécessaire
+            if (ville != null && !ville.isEmpty()) {
                 stmt.setString(3, "%" + ville + "%");
             }
 
@@ -311,7 +314,5 @@ public class LogementDAOImpl implements LogementDAO {
 
         return logements;
     }
-
-
 
 }
