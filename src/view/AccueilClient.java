@@ -9,7 +9,6 @@ import model.Utilisateur;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
 public class AccueilClient extends JFrame {
 
     private JPanel logementsPanel;
@@ -26,7 +25,7 @@ public class AccueilClient extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        // ------ BARRE DU HAUT ------
+        // ------ BARRE DU HAUT ------ (Non modifié)
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setBackground(new Color(90, 130, 160));
         topBar.setPreferredSize(new Dimension(0, 60));
@@ -71,7 +70,7 @@ public class AccueilClient extends JFrame {
         topBar.add(rightPanel, BorderLayout.EAST);
         mainPanel.add(topBar);
 
-        // ------ ZONE RECHERCHE ------
+        // ------ ZONE RECHERCHE ------ (Non modifié)
         JPanel recherchePanel = new JPanel();
         recherchePanel.setBackground(new Color(230, 240, 250));
         recherchePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -122,7 +121,7 @@ public class AccueilClient extends JFrame {
 
         mainPanel.add(recherchePanel);
 
-        // ------ ZONE LOGEMENTS ------
+        // ------ ZONE LOGEMENTS ------ (Non modifié)
         logementsPanel = new JPanel();
         logementsPanel.setLayout(new BoxLayout(logementsPanel, BoxLayout.Y_AXIS));
         logementsPanel.setBackground(new Color(245, 245, 245));
@@ -136,7 +135,7 @@ public class AccueilClient extends JFrame {
         // Récupération initiale
         afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
 
-        // ------ Action de recherche ------
+        // ------ Action de recherche ------ (Modifications)
         btnRechercher.addActionListener(e -> {
             String ville = destinationField.getText().trim();
             int nbPersonnesVal = (int) nbPersonnes.getValue();
@@ -145,21 +144,9 @@ public class AccueilClient extends JFrame {
             // Applique les filtres sur la ville, le nombre de personnes et de chambres
             List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesVal, nbChambresVal);
 
-            // Affichage des logements filtrés sans fermer la fenêtre
+            // Affiche les logements filtrés sans fermer la fenêtre
             afficherLogements(resultats);
-
-            int nbPersonnesValue = (int) nbPersonnes.getValue();
-            int nbChambresValue = (int) nbChambres.getValue();
-
-            if (!ville.isEmpty() && !ville.equals("Où allez-vous ?")) {
-                List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesValue, nbChambresValue);
-                afficherLogements(resultats);
-            } else {
-                afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
-            }
-
         });
-
 
 
         setContentPane(mainPanel);

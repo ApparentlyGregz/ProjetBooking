@@ -108,18 +108,25 @@ public class FenetreConnexion extends JFrame {
             String id = identifiantField.getText();
             String mdp = new String(motDePasseField.getPassword());
 
+            // Vérifiez la connexion avec l'identifiant et le mot de passe
             if (controller.connexion(id, mdp)) {
                 Utilisateur u = controller.getUtilisateurParIdentifiant(id);
-                dispose();
-                if (u.getTypeCompte().equals("client")) {
+                dispose();  // Ferme la fenêtre de connexion
+
+                // Vérification du type de compte pour rediriger
+                if (u.getTypeCompte().equals("client") || u.getTypeCompte().equals("nouveau_client")) {
+                    // Si c'est un client ou un nouveau client, on ouvre la page d'accueil client
                     new AccueilClient(u.getIdentifiant());
                 } else if (u.getTypeCompte().equals("admin")) {
+                    // Si c'est un administrateur, on ouvre la page d'accueil admin
                     new AccueilAdmin(u.getIdentifiant());
                 }
             } else {
                 messageErreur.setText("❌ Identifiant ou mot de passe incorrect.");
             }
         });
+
+
 
         inscriptionBtn.addActionListener(e -> {
             dispose();

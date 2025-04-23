@@ -1,9 +1,7 @@
 package view;
 
-import dao.LogementDAO;
 import dao.LogementDAOImpl;
 import model.Logement;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -44,48 +42,16 @@ public class AccueilAdmin extends JFrame {
 
         JButton btnAdd = new JButton("➕ Ajouter");
         btnAdd.addActionListener(e -> new FenetreAjoutLogement(this));
-        JButton btnUsers = new JButton("👤 Utilisateurs");
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
         rightPanel.add(btnAdd);
-        rightPanel.add(btnUsers);
 
         topBar.add(leftPanel, BorderLayout.WEST);
         topBar.add(centerPanel, BorderLayout.CENTER);
         topBar.add(rightPanel, BorderLayout.EAST);
 
         mainPanel.add(topBar, BorderLayout.NORTH);
-
-        // --- Barre de recherche ---
-        JPanel searchBar = new JPanel();
-        searchBar.setLayout(new FlowLayout(FlowLayout.CENTER));
-        searchBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        searchBar.setBackground(new Color(230, 235, 245));
-
-        JTextField villeField = new JTextField("Où allez-vous ?", 20);
-        villeField.setForeground(Color.GRAY);
-        villeField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent e) {
-                if (villeField.getText().equals("Où allez-vous ?")) {
-                    villeField.setText("");
-                    villeField.setForeground(Color.BLACK);
-                }
-            }
-
-            public void focusLost(java.awt.event.FocusEvent e) {
-                if (villeField.getText().isEmpty()) {
-                    villeField.setText("Où allez-vous ?");
-                    villeField.setForeground(Color.GRAY);
-                }
-            }
-        });
-
-        JButton searchBtn = new JButton("Rechercher");
-        searchBar.add(villeField);
-        searchBar.add(searchBtn);
-
-        mainPanel.add(searchBar, BorderLayout.BEFORE_FIRST_LINE);
 
         // --- Zone des logements ---
         logementsPanel = new JPanel();
@@ -99,27 +65,15 @@ public class AccueilAdmin extends JFrame {
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         // --- Chargement initial des logements ---
-        LogementDAO logementDAO = new LogementDAOImpl();
+        LogementDAOImpl logementDAO = new LogementDAOImpl();
         List<Logement> tousLesLogements = logementDAO.getAllLogementsAvecImages();
         afficherLogements(tousLesLogements);
-
-        // --- Action de recherche ---
-        searchBtn.addActionListener(e -> {
-            String ville = villeField.getText().trim();
-            if (!ville.isEmpty() && !ville.equals("Où allez-vous ?")) {
-                List<Logement> filtres = tousLesLogements.stream()
-                        .filter(l -> l.getVille() != null && l.getVille().equalsIgnoreCase(ville))
-                        .collect(Collectors.toList());
-                afficherLogements(filtres);
-            } else {
-                afficherLogements(tousLesLogements); // reset
-            }
-        });
 
         setContentPane(mainPanel);
         setVisible(true);
     }
 
+    // Méthode pour afficher les logements
     private void afficherLogements(List<Logement> logements) {
         logementsPanel.removeAll();
         for (Logement logement : logements) {
