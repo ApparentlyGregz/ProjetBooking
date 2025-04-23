@@ -5,6 +5,7 @@ import com.toedter.calendar.IDateEvaluator;
 import dao.ReservationDAO;
 import dao.ReservationDAOImpl;
 import model.Logement;
+import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +17,13 @@ public class PageLogement extends JFrame {
     private int currentImageIndex = 0;
     private Timer timer;
     private JLabel imageLabel;
+    private Date dateDebutSelectionnee = null;
+    private Date dateFinSelectionnee = null;
+    private Utilisateur utilisateur;
 
-    public PageLogement(Logement logement) {
+    public PageLogement(Logement logement, Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+
         setTitle("Détails du logement - " + logement.getNom());
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -26,16 +32,13 @@ public class PageLogement extends JFrame {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         mainPanel.setBackground(Color.WHITE);
 
-        // Titre
         JLabel titre = new JLabel(logement.getNom(), SwingConstants.CENTER);
         titre.setFont(new Font("Arial", Font.BOLD, 32));
         mainPanel.add(titre, BorderLayout.NORTH);
 
-        // Centre
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setOpaque(false);
 
-        // === PARTIE GAUCHE : CARROUSEL IMAGE ===
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.TOP);
@@ -55,12 +58,9 @@ public class PageLogement extends JFrame {
 
         centerPanel.add(imageLabel, BorderLayout.WEST);
 
-        // === PARTIE DROITE : INFOS + CALENDRIER ===
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BorderLayout());
+        JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setOpaque(false);
 
-        // --- INFOS EN HAUT ---
         JPanel topInfosPanel = new JPanel();
         topInfosPanel.setLayout(new BoxLayout(topInfosPanel, BoxLayout.Y_AXIS));
         topInfosPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -80,15 +80,12 @@ public class PageLogement extends JFrame {
         JPanel iconsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         iconsPanel.setOpaque(false);
 
-        if (logement.hasWifi()) {
+        if (logement.hasWifi())
             iconsPanel.add(new JLabel(resizeIcon(new ImageIcon("images/wifi.jpeg"), 24, 24)));
-        }
-        if (logement.hasClim()) {
+        if (logement.hasClim())
             iconsPanel.add(new JLabel(resizeIcon(new ImageIcon("images/clim.jpeg"), 24, 24)));
-        }
-        if (logement.hasParking()) {
+        if (logement.hasParking())
             iconsPanel.add(new JLabel(resizeIcon(new ImageIcon("images/parking.jpeg"), 24, 24)));
-        }
 
         topInfosPanel.add(description);
         topInfosPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -98,7 +95,6 @@ public class PageLogement extends JFrame {
 
         rightPanel.add(topInfosPanel, BorderLayout.NORTH);
 
-        // --- CALENDRIER EN BAS ---
         JPanel calendarPanel = new JPanel();
         calendarPanel.setLayout(new BoxLayout(calendarPanel, BoxLayout.Y_AXIS));
         calendarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -115,19 +111,11 @@ public class PageLogement extends JFrame {
         List<Date> datesReservees = reservationDAO.getDatesReserveesPourLogement(logement.getId());
 
         calendar.getDayChooser().addDateEvaluator(new IDateEvaluator() {
-            @Override
             public boolean isSpecial(Date date) { return false; }
-
-            @Override
             public Color getSpecialForegroundColor() { return null; }
-
-            @Override
             public Color getSpecialBackroundColor() { return null; }
-
-            @Override
             public String getSpecialTooltip() { return null; }
 
-            @Override
             public boolean isInvalid(Date date) {
                 Calendar c1 = Calendar.getInstance();
                 c1.setTime(date);
@@ -145,14 +133,29 @@ public class PageLogement extends JFrame {
                 return false;
             }
 
-            @Override
             public Color getInvalidForegroundColor() { return Color.RED; }
-
-            @Override
             public Color getInvalidBackroundColor() { return Color.LIGHT_GRAY; }
-
-            @Override
             public String getInvalidTooltip() { return "Déjà réservée"; }
+        });
+
+        calendar.getDayChooser().addPropertyChangeListener("day", evt -> {
+            Date selectedDate = calendar.getDate();
+
+            if (dateDebutSelectionnee == null) {
+                dateDebutSelectionnee = selectedDate;
+                JOptionPane.showMessageDialog(this, "Date d'arrivée sélectionnée : " + selectedDate);
+            } else if (dateFinSelectionnee == null) {
+                if (selectedDate.before(dateDebutSelectionnee)) {
+                    JOptionPane.showMessageDialog(this, "La date de départ ne peut pas être avant la date d'arrivée !");
+                } else {
+                    dateFinSelectionnee = selectedDate;
+                    JOptionPane.showMessageDialog(this, "Date de départ sélectionnée : " + selectedDate);
+                }
+            } else {
+                dateDebutSelectionnee = selectedDate;
+                dateFinSelectionnee = null;
+                JOptionPane.showMessageDialog(this, "Nouvelle date d'arrivée sélectionnée : " + selectedDate);
+            }
         });
 
         calendarPanel.add(calendarTitle);
@@ -162,12 +165,56 @@ public class PageLogement extends JFrame {
         centerPanel.add(rightPanel, BorderLayout.CENTER);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
-        // Bas : bouton de réservation (placeholder)
         JButton btnReserver = new JButton("Réserver ce logement");
         btnReserver.setFont(new Font("Arial", Font.BOLD, 18));
         btnReserver.setPreferredSize(new Dimension(250, 50));
         btnReserver.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Formulaire de réservation à venir...");
+            if (dateDebutSelectionnee != null && dateFinSelectionnee != null) {
+                JSpinner spinnerAdultes = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
+                JSpinner spinnerEnfants = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
+
+                JPanel panel = new JPanel(new GridLayout(2, 2));
+                panel.add(new JLabel("Nombre d'adultes :"));
+                panel.add(spinnerAdultes);
+                panel.add(new JLabel("Nombre d'enfants :"));
+                panel.add(spinnerEnfants);
+
+                int result = JOptionPane.showConfirmDialog(
+                        this,
+                        panel,
+                        "Informations de réservation",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (result == JOptionPane.OK_OPTION) {
+                    int nbAdultes = (int) spinnerAdultes.getValue();
+                    int nbEnfants = (int) spinnerEnfants.getValue();
+                    int totalPersonnes = nbAdultes + nbEnfants;
+
+                    if (totalPersonnes > logement.getNbPersonnesMax()) {
+                        JOptionPane.showMessageDialog(this,
+                                "Ce logement peut accueillir au maximum " + logement.getNbPersonnesMax() + " personnes.\nVous avez saisi " + totalPersonnes + ".",
+                                "Capacité dépassée",
+                                JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    JOptionPane.showMessageDialog(this,
+                            "Réservation confirmée !\n" +
+                                    "Logement ID : " + logement.getId() +
+                                    "\nUtilisateur ID : " + utilisateur.getId() +
+                                    "\nDu : " + dateDebutSelectionnee +
+                                    "\nAu : " + dateFinSelectionnee +
+                                    "\nAdultes : " + nbAdultes +
+                                    "\nEnfants : " + nbEnfants);
+
+                    // TODO: calcul du prix et insertion en base
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner une date d'arrivée et de départ.");
+            }
         });
 
         JPanel southPanel = new JPanel();

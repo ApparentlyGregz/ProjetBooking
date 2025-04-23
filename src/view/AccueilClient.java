@@ -1,7 +1,9 @@
 package view;
 
 import dao.LogementDAOImpl;
+import dao.UtilisateurDAOImpl;
 import model.Logement;
+import model.Utilisateur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,11 +12,15 @@ import java.util.List;
 public class AccueilClient extends JFrame {
 
     private JPanel logementsPanel;
+    private Utilisateur utilisateur;
 
     public AccueilClient(String identifiant) {
         setTitle("Espace Client - Booking");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Récupération de l'utilisateur connecté
+        this.utilisateur = new UtilisateurDAOImpl().getByIdentifiant(identifiant);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
 
@@ -124,11 +130,9 @@ public class AccueilClient extends JFrame {
             int nbChambresValue = (int) nbChambres.getValue();
 
             if (!ville.isEmpty() && !ville.equals("Où allez-vous ?")) {
-                // Recherche avec les critères (ville, nombre de personnes et chambres)
                 List<Logement> resultats = new LogementDAOImpl().rechercherLogements(ville, nbPersonnesValue, nbChambresValue);
                 afficherLogements(resultats);
             } else {
-                // Recherche sans critère de ville, affiche tous les logements
                 afficherLogements(new LogementDAOImpl().getAllLogementsAvecImages());
             }
         });
@@ -140,7 +144,7 @@ public class AccueilClient extends JFrame {
     private void afficherLogements(List<Logement> logements) {
         logementsPanel.removeAll();
         for (Logement logement : logements) {
-            logementsPanel.add(new CarteLogement(logement));
+            logementsPanel.add(new CarteLogement(logement, utilisateur));
             logementsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
         logementsPanel.revalidate();
