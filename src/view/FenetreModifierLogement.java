@@ -26,6 +26,14 @@ public class FenetreModifierLogement extends JFrame {
         JTextField nbPersField = new JTextField(String.valueOf(logement.getNbPersonnesMax()));
         JTextField etoilesField = new JTextField(String.valueOf(logement.getNombreEtoiles()));
 
+
+        int nbChambres = logement.getNbChambres();
+        if (nbChambres < 1 || nbChambres > 10) {
+            nbChambres = 1; // Valeur par défaut si la valeur est hors des limites
+        }
+        // Ajouter un champ pour le nombre de chambres
+        JSpinner nbChambresSpinner = new JSpinner(new SpinnerNumberModel(logement.getNbChambres(), 1, 10, 1)); // Spinner pour le nombre de chambres
+
         String[] types = { "Villa", "Appartement", "Chalet", "Hôtel", "Studio" };
         JComboBox<String> typeBox = new JComboBox<>(types);
         if (logement.getType() != null) {
@@ -52,6 +60,7 @@ public class FenetreModifierLogement extends JFrame {
         panel.add(new JLabel("Superficie :")); panel.add(superficieField);
         panel.add(new JLabel("Nb personnes max :")); panel.add(nbPersField);
         panel.add(new JLabel("Nombre d'étoiles :")); panel.add(etoilesField);
+        panel.add(new JLabel("Nombre de chambres :")); panel.add(nbChambresSpinner);  // Champ pour le nombre de chambres
         panel.add(new JLabel("Type :")); panel.add(typeBox);
 
         panel.add(wifiBox);
@@ -84,6 +93,8 @@ public class FenetreModifierLogement extends JFrame {
                 logement.setSuperficie(Integer.parseInt(superficieField.getText()));
                 logement.setNbPersonnesMax(Integer.parseInt(nbPersField.getText()));
                 logement.setNombreEtoiles(Integer.parseInt(etoilesField.getText()));
+                logement.setNbChambres((int) nbChambresSpinner.getValue());  // Récupérer le nombre de chambres
+
                 logement.setHasWifi(wifiBox.isSelected());
                 logement.setHasClim(climBox.isSelected());
                 logement.setHasParking(parkingBox.isSelected());

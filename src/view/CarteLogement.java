@@ -41,6 +41,10 @@ public class CarteLogement extends JPanel {
         JLabel desc = new JLabel("<html><body style='width:300px'>" + logement.getDescription() + "</body></html>");
         desc.setFont(new Font("Arial", Font.PLAIN, 13));
 
+        // Ajout du nombre de chambres
+        JLabel nbChambresLabel = new JLabel("<html><body style='width:300px'><br><b>Nombre de chambres :</b> " + logement.getNbChambres() + "</body></html>");
+        nbChambresLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+
         JLabel infos = new JLabel("<html><body style='width:300px'>"
                 + "<br><b>Superficie :</b> " + logement.getSuperficie() + " m²"
                 + "<br><b>Nombre de personnes max :</b> " + logement.getNbPersonnesMax()
@@ -71,6 +75,7 @@ public class CarteLogement extends JPanel {
         textPanel.add(desc);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(infos);
+        textPanel.add(nbChambresLabel); // Affichage du nombre de chambres
 
         JLabel adresseLabel = new JLabel("<html><b>Adresse :</b> " + logement.getRue() + ", "
                 + logement.getCodePostal() + " " + logement.getVille() + " (" + logement.getPays() + ")</html>");

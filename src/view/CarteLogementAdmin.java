@@ -5,7 +5,6 @@ import model.Logement;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
 public class CarteLogementAdmin extends JPanel {
     private JLabel imageLabel;
     private int currentImageIndex = 0;
@@ -14,7 +13,7 @@ public class CarteLogementAdmin extends JPanel {
     public CarteLogementAdmin(Logement logement) {
         setPreferredSize(new Dimension(600, 250));
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout());  // Utilisation du BorderLayout
 
         // Image à gauche
         imageLabel = new JLabel();
@@ -22,11 +21,12 @@ public class CarteLogementAdmin extends JPanel {
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         add(imageLabel, BorderLayout.WEST);
 
-        // Texte à droite
+        // Création du panneau à droite
         JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BorderLayout());
+        rightPanel.setLayout(new BorderLayout());  // BorderLayout pour la gestion du bouton
         rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
+        // Création du panneau pour le texte (nom, description, etc.)
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
@@ -44,6 +44,16 @@ public class CarteLogementAdmin extends JPanel {
                 + "</body></html>");
         infos.setFont(new Font("Arial", Font.PLAIN, 12));
 
+        // Position du bouton "Modifier"
+        JButton modifierBtn = new JButton("Modifier");
+        modifierBtn.setAlignmentX(Component.RIGHT_ALIGNMENT);  // Aligne à droite
+
+        modifierBtn.addActionListener(e -> {
+            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+            new FenetreModifierLogement(logement, parent);
+        });
+
+        // Panneau d'options (WiFi, Clim, Parking)
         JPanel optionsPanel = new JPanel();
         optionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         optionsPanel.setOpaque(false);
@@ -61,18 +71,7 @@ public class CarteLogementAdmin extends JPanel {
             optionsPanel.add(parkingIcon);
         }
 
-        JButton modifierBtn = new JButton("Modifier");
-
-        modifierBtn.addActionListener(e -> {
-            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-            new FenetreModifierLogement(logement, parent);
-        });
-
-// Ajoute le bouton dans ton panel
-        rightPanel.add(modifierBtn);
-        modifierBtn.setBackground(new Color(220, 220, 220));
-
-
+        // Ajouter tout dans le panneau texte
         textPanel.add(titre);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(desc);
@@ -90,8 +89,14 @@ public class CarteLogementAdmin extends JPanel {
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(optionsPanel);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        textPanel.add(modifierBtn);
 
+        // Ajouter le bouton "Modifier" dans le coin supérieur droit
+        JPanel topRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));  // Panneau de flux à droite
+        topRightPanel.setOpaque(false);
+        topRightPanel.add(modifierBtn);
+        rightPanel.add(topRightPanel, BorderLayout.NORTH);  // Ajouter le bouton au panneau droit en haut
+
+        // Ajouter tout dans le panneau principal à droite
         rightPanel.add(textPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.CENTER);
 
@@ -123,5 +128,4 @@ public class CarteLogementAdmin extends JPanel {
         Image resized = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resized);
     }
-
 }

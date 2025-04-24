@@ -14,7 +14,7 @@ public class LogementDAOImpl implements LogementDAO {
         List<Logement> logements = new ArrayList<>();
         String sql = "SELECT l.id, l.nom, l.description, l.superficie, l.nb_personnes_max, l.nombre_etoiles, " +
                 "l.date_creation, l.wifi, l.clim, l.parking, l.type, i.url_image, " +
-                "a.rue, a.ville, a.code_postal, a.pays, a.distance_centre " +
+                "a.rue, a.ville, a.code_postal, a.pays, a.distance_centre, l.nb_chambres " +  // Assurez-vous que l.nb_chambres est bien sélectionné
                 "FROM logement l " +
                 "LEFT JOIN logement_image i ON l.id = i.logement_id " +
                 "LEFT JOIN adresse a ON l.id = a.logement_id " +
@@ -47,7 +47,7 @@ public class LogementDAOImpl implements LogementDAO {
                     logement.setHasWifi(rs.getInt("wifi") == 1);
                     logement.setHasClim(rs.getInt("clim") == 1);
                     logement.setHasParking(rs.getInt("parking") == 1);
-
+                    logement.setNbChambres(rs.getInt("nb_chambres"));  // Récupère le nombre de chambres
                     logements.add(logement);
                     currentId = id;
                 }
@@ -64,6 +64,7 @@ public class LogementDAOImpl implements LogementDAO {
 
         return logements;
     }
+
 
     @Override
     public boolean ajouterLogement(Logement logement) {
@@ -129,11 +130,9 @@ public class LogementDAOImpl implements LogementDAO {
 
         return false;
     }
-
-
     @Override
     public boolean modifierLogement(Logement logement) {
-        String sqlLogement = "UPDATE logement SET nom=?, description=?, superficie=?, nb_personnes_max=?, nombre_etoiles=?, wifi=?, clim=?, parking=?, type=? WHERE id=?";
+        String sqlLogement = "UPDATE logement SET nom=?, description=?, superficie=?, nb_personnes_max=?, nombre_etoiles=?, wifi=?, clim=?, parking=?, type=?, nb_chambres=? WHERE id=?";
         String sqlAdresse = "UPDATE adresse SET rue=?, ville=?, code_postal=?, pays=?, distance_centre=? WHERE logement_id=?";
 
         try (Connection conn = Database.getConnection()) {
@@ -153,7 +152,8 @@ public class LogementDAOImpl implements LogementDAO {
                 stmtLogement.setBoolean(7, logement.hasClim());
                 stmtLogement.setBoolean(8, logement.hasParking());
                 stmtLogement.setString(9, logement.getType());
-                stmtLogement.setInt(10, logement.getId());
+                stmtLogement.setInt(10, logement.getNbChambres());  // Mise à jour du nombre de chambres
+                stmtLogement.setInt(11, logement.getId());
                 stmtLogement.executeUpdate();
 
                 // --- Mise à jour de l'adresse associée ---
@@ -180,6 +180,7 @@ public class LogementDAOImpl implements LogementDAO {
             return false;
         }
     }
+
 
     @Override
     public List<Logement> getLogementsParVille(String ville) {
@@ -210,6 +211,8 @@ public class LogementDAOImpl implements LogementDAO {
                     logement.setSuperficie(rs.getInt("superficie"));
                     logement.setNbPersonnesMax(rs.getInt("nb_personnes_max"));
                     logement.setNombreEtoiles(rs.getInt("nombre_etoiles"));
+                    logement.setNbChambres(rs.getInt("nb_chambres")); // Ajoutez cette ligne pour récupérer le nombre de chambres
+
                     logement.setDateCreation(rs.getDate("date_creation"));
                     logement.setHasWifi(rs.getInt("wifi") == 1);
                     logement.setHasClim(rs.getInt("clim") == 1);

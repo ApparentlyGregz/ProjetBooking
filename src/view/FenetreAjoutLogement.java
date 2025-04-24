@@ -32,6 +32,9 @@ public class FenetreAjoutLogement extends JFrame {
         JTextField nbPersField = new JTextField();
         JTextField etoilesField = new JTextField();
 
+        // Ajouter un champ pour le nombre de chambres
+        JSpinner nbChambresSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1)); // Spinner pour le nombre de chambres
+
         String[] types = { "Villa", "Appartement", "Chalet", "Hôtel", "Studio" };
         JComboBox<String> typeBox = new JComboBox<>(types);
 
@@ -57,6 +60,11 @@ public class FenetreAjoutLogement extends JFrame {
         panel.add(new JLabel("Superficie (m²) :")); panel.add(superficieField);
         panel.add(new JLabel("Nb personnes max :")); panel.add(nbPersField);
         panel.add(new JLabel("Nombre d'étoiles :")); panel.add(etoilesField);
+
+        // Ajouter le champ de nombre de chambres
+        panel.add(new JLabel("Nombre de chambres :"));
+        panel.add(nbChambresSpinner);
+
         panel.add(new JLabel("Type de logement :")); panel.add(typeBox);
 
         panel.add(wifiBox);
@@ -105,6 +113,7 @@ public class FenetreAjoutLogement extends JFrame {
                 logement.setSuperficie(Integer.parseInt(superficieField.getText()));
                 logement.setNbPersonnesMax(Integer.parseInt(nbPersField.getText()));
                 logement.setNombreEtoiles(Integer.parseInt(etoilesField.getText()));
+                logement.setNbChambres((int) nbChambresSpinner.getValue()); // Récupérer la valeur du nombre de chambres
                 logement.setDateCreation(new java.sql.Date(new Date().getTime()));
                 logement.setHasWifi(wifiBox.isSelected());
                 logement.setHasClim(climBox.isSelected());
