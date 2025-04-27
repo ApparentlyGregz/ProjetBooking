@@ -30,6 +30,26 @@ public class TarifDAOImpl implements TarifDAO {
     }
 
     @Override
+    public boolean modifierTarif(int logementId, double nouveauPrix) {
+        String updateTarifSQL = "UPDATE tarif SET prix_nuit = ? WHERE logement_id = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(updateTarifSQL)) {
+
+            stmt.setDouble(1, nouveauPrix);
+            stmt.setInt(2, logementId);
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    @Override
     public boolean ajouterTarif(int logementId, double prixParNuit) {
         String insertTarifSQL = "INSERT INTO tarif (logement_id, prix_nuit) VALUES (?, ?)";
 
