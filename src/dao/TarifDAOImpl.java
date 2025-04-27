@@ -28,4 +28,23 @@ public class TarifDAOImpl implements TarifDAO {
 
         return 0.0; // prix par défaut si non trouvé
     }
+
+    @Override
+    public boolean ajouterTarif(int logementId, double prixParNuit) {
+        String insertTarifSQL = "INSERT INTO tarif (logement_id, prix_nuit) VALUES (?, ?)";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(insertTarifSQL)) {
+
+            stmt.setInt(1, logementId);
+            stmt.setDouble(2, prixParNuit);
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
