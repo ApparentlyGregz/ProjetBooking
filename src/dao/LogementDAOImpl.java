@@ -303,6 +303,8 @@ public class LogementDAOImpl implements LogementDAO {
                     logement.setDescription(rs.getString("description"));
                     logement.setSuperficie(rs.getInt("superficie"));
                     logement.setNbPersonnesMax(rs.getInt("nb_personnes_max"));
+                    logement.setNbChambres(rs.getInt("nb_chambres"));
+
                     logement.setNombreEtoiles(rs.getInt("nombre_etoiles"));
                     logement.setHasWifi(rs.getBoolean("wifi"));
                     logement.setHasClim(rs.getBoolean("clim"));

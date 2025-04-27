@@ -193,7 +193,12 @@ public class AccueilClient extends JFrame {
         int nbPers = (int) nbPersonnes.getValue();
         int nbCh = (int) nbChambres.getValue();
 
-        List<Logement> logements = new LogementDAOImpl().rechercherLogements(ville.equals("Où allez-vous ?") ? "" : ville, nbPers, nbCh);
+        if (nbPers < 1) nbPers = 1;
+        if (nbCh < 1) nbCh = 1;
+
+        List<Logement> logements = new LogementDAOImpl().rechercherLogements(
+                ville.equals("Où allez-vous ?") ? "" : ville, nbPers, nbCh
+        );
 
         double prixMax = prixMaxSlider.getValue();
         int distanceMax = distanceMaxSlider.getValue();
@@ -214,4 +219,5 @@ public class AccueilClient extends JFrame {
 
         afficherLogements(logements);
     }
+
 }
