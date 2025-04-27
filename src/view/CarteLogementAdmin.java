@@ -1,10 +1,15 @@
 package view;
 
+import dao.LogementDAO;
+import dao.LogementDAOImpl;
+import dao.TarifDAO;
+import dao.TarifDAOImpl;
 import model.Logement;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 public class CarteLogementAdmin extends JPanel {
     private JLabel imageLabel;
     private int currentImageIndex = 0;
@@ -13,7 +18,7 @@ public class CarteLogementAdmin extends JPanel {
     public CarteLogementAdmin(Logement logement) {
         setPreferredSize(new Dimension(600, 250));
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        setLayout(new BorderLayout());  // Utilisation du BorderLayout
+        setLayout(new BorderLayout());
 
         // Image à gauche
         imageLabel = new JLabel();
@@ -21,12 +26,12 @@ public class CarteLogementAdmin extends JPanel {
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         add(imageLabel, BorderLayout.WEST);
 
-        // Création du panneau à droite
+        // Panneau principal à droite
         JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BorderLayout());  // BorderLayout pour la gestion du bouton
+        rightPanel.setLayout(new BorderLayout());
         rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        // Création du panneau pour le texte (nom, description, etc.)
+        // Panneau pour les textes
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
@@ -36,6 +41,9 @@ public class CarteLogementAdmin extends JPanel {
         JLabel desc = new JLabel("<html><body style='width:300px'>" + logement.getDescription() + "</body></html>");
         desc.setFont(new Font("Arial", Font.PLAIN, 13));
 
+        JLabel nbChambresLabel = new JLabel("<html><body style='width:300px'><br><b>Nombre de chambres :</b> " + logement.getNbChambres() + "</body></html>");
+        nbChambresLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+
         JLabel infos = new JLabel("<html><body style='width:300px'>"
                 + "<br><b>Superficie :</b> " + logement.getSuperficie() + " m²"
                 + "<br><b>Nombre de personnes max :</b> " + logement.getNbPersonnesMax()
@@ -44,16 +52,13 @@ public class CarteLogementAdmin extends JPanel {
                 + "</body></html>");
         infos.setFont(new Font("Arial", Font.PLAIN, 12));
 
-        // Position du bouton "Modifier"
-        JButton modifierBtn = new JButton("Modifier");
-        modifierBtn.setAlignmentX(Component.RIGHT_ALIGNMENT);  // Aligne à droite
+        JLabel adresseLabel = new JLabel("<html><b>Adresse :</b> " + logement.getRue() + ", "
+                + logement.getCodePostal() + " " + logement.getVille() + " (" + logement.getPays() + ")</html>");
+        adresseLabel.setFont(new Font("Arial", Font.PLAIN, 12));
 
-        modifierBtn.addActionListener(e -> {
-            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-            new FenetreModifierLogement(logement, parent);
-        });
+        JLabel distanceLabel = new JLabel("À " + logement.getDistanceCentre() + " m du centre");
+        distanceLabel.setFont(new Font("Arial", Font.ITALIC, 11));
 
-        // Panneau d'options (WiFi, Clim, Parking)
         JPanel optionsPanel = new JPanel();
         optionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         optionsPanel.setOpaque(false);
@@ -71,36 +76,76 @@ public class CarteLogementAdmin extends JPanel {
             optionsPanel.add(parkingIcon);
         }
 
-        // Ajouter tout dans le panneau texte
         textPanel.add(titre);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(desc);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(infos);
-
-        JLabel adresseLabel = new JLabel("<html><b>Adresse :</b> " + logement.getRue() + ", "
-                + logement.getCodePostal() + " " + logement.getVille() + " (" + logement.getPays() + ")</html>");
-        adresseLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        textPanel.add(nbChambresLabel);
         textPanel.add(adresseLabel);
-
-        JLabel distanceLabel = new JLabel("À " + logement.getDistanceCentre() + " m du centre");
-        distanceLabel.setFont(new Font("Arial", Font.ITALIC, 11));
         textPanel.add(distanceLabel);
         textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         textPanel.add(optionsPanel);
-        textPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // Ajouter le bouton "Modifier" dans le coin supérieur droit
-        JPanel topRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));  // Panneau de flux à droite
+        TarifDAO tarifDAO = new TarifDAOImpl();
+        double prix = tarifDAO.getPrixParNuit(logement.getId());
+
+        JPanel prixPanel = new JPanel();
+        prixPanel.setLayout(new BoxLayout(prixPanel, BoxLayout.Y_AXIS));
+        prixPanel.setPreferredSize(new Dimension(120, 250));
+        prixPanel.setBackground(Color.WHITE);
+
+        prixPanel.add(Box.createVerticalGlue());
+        JLabel prixLabel = new JLabel(prix + " € / nuit");
+        prixLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        prixLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        prixPanel.add(prixLabel);
+        prixPanel.add(Box.createVerticalGlue());
+
+        add(prixPanel, BorderLayout.EAST);
+
+        // === Ajout des boutons "Modifier" et "Supprimer"
+        JButton modifierBtn = new JButton("Modifier");
+        JButton supprimerBtn = new JButton("Supprimer");
+
+        modifierBtn.addActionListener(e -> {
+            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+            new FenetreModifierLogement(logement, parent);
+        });
+
+        supprimerBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Êtes-vous sûr de vouloir supprimer ce logement ?",
+                    "Confirmation de suppression",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                LogementDAO logementDAO = new LogementDAOImpl();
+                boolean deleted = logementDAO.supprimerLogement(logement.getId());
+
+                if (deleted) {
+                    JOptionPane.showMessageDialog(this, "Logement supprimé avec succès !");
+                    Container parent = this.getParent();
+                    parent.remove(this); // enlever la carte du panel
+                    parent.revalidate();
+                    parent.repaint();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erreur lors de la suppression.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        JPanel topRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         topRightPanel.setOpaque(false);
         topRightPanel.add(modifierBtn);
-        rightPanel.add(topRightPanel, BorderLayout.NORTH);  // Ajouter le bouton au panneau droit en haut
+        topRightPanel.add(supprimerBtn);
 
-        // Ajouter tout dans le panneau principal à droite
+        rightPanel.add(topRightPanel, BorderLayout.NORTH);
         rightPanel.add(textPanel, BorderLayout.CENTER);
+
         add(rightPanel, BorderLayout.CENTER);
 
-        // Carrousel d’images
+        // === Carrousel d’images
         List<String> images = logement.getImages();
         if (!images.isEmpty()) {
             updateImage(images);

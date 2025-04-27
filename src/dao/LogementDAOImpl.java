@@ -131,6 +131,20 @@ public class LogementDAOImpl implements LogementDAO {
         return -1; // ❌ Retourner -1 si échec
     }
 
+
+    public boolean supprimerLogement(int idLogement) {
+        String sql = "DELETE FROM logement WHERE id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idLogement);
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     @Override
     public boolean modifierLogement(Logement logement) {
         String sqlLogement = "UPDATE logement SET nom=?, description=?, superficie=?, nb_personnes_max=?, nombre_etoiles=?, wifi=?, clim=?, parking=?, type=?, nb_chambres=? WHERE id=?";
