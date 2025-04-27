@@ -75,6 +75,7 @@ public class FenetreInscription extends JFrame {
             if (success) {
                 JOptionPane.showMessageDialog(this, "Compte créé avec succès ! Vous pouvez vous connecter.");
                 dispose(); // Fermer la fenêtre d'inscription
+                new FenetreConnexion(); // <-- On ouvre la fenêtre de connexion
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de la création du compte. Vérifiez les infos.");
             }
