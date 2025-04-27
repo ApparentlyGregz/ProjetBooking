@@ -11,4 +11,6 @@ public interface TarifDAO {
      */
     double getPrixParNuit(int logementId);
     boolean ajouterTarif(int logementId, double prixParNuit);
+    boolean modifierTarif(int logementId, double nouveauPrix);
+
 }
