@@ -145,4 +145,6 @@ public class CarteLogement extends JPanel {
         Image resized = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resized);
     }
+
+
 }

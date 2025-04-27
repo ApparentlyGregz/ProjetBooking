@@ -318,4 +318,100 @@ public class LogementDAOImpl implements LogementDAO {
         return logements;
     }
 
+    // Méthode de recherche des logements avec les filtres
+    private List<Logement> rechercherLogementsAvecFiltres(String ville, int distance, double prixMin, double prixMax, boolean wifi, boolean clim, boolean parking) {
+        List<Logement> logements = new ArrayList<>();
+
+        // Construire la requête SQL avec les filtres
+        String sql = "SELECT l.*, i.url_image, a.rue, a.ville, a.code_postal, a.pays, a.distance_centre " +
+                "FROM logement l " +
+                "LEFT JOIN logement_image i ON l.id = i.logement_id " +
+                "LEFT JOIN adresse a ON l.id = a.logement_id " +
+                "WHERE l.nb_personnes_max > 0 ";
+
+        // Filtrage par ville
+        if (ville != null && !ville.isEmpty()) {
+            sql += "AND a.ville LIKE ? ";
+        }
+
+        // Filtrage par distance du centre
+        if (distance > 0) {
+            sql += "AND a.distance_centre <= ? ";
+        }
+
+        // Filtrage par prix
+        if (prixMin >= 0 && prixMax >= prixMin) {
+            sql += "AND l.prix_nuit BETWEEN ? AND ? ";
+        }
+
+        // Filtrage par wifi, clim, parking
+        if (wifi) {
+            sql += "AND l.wifi = 1 ";
+        }
+        if (clim) {
+            sql += "AND l.clim = 1 ";
+        }
+        if (parking) {
+            sql += "AND l.parking = 1 ";
+        }
+
+        // Exécution de la requête
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            int index = 1;
+            // Ajouter les paramètres de la requête pour chaque filtre
+            if (ville != null && !ville.isEmpty()) {
+                stmt.setString(index++, "%" + ville + "%");
+            }
+            if (distance > 0) {
+                stmt.setInt(index++, distance);
+            }
+            if (prixMin >= 0 && prixMax >= prixMin) {
+                stmt.setDouble(index++, prixMin);
+                stmt.setDouble(index++, prixMax);
+            }
+            if (wifi) {
+                stmt.setBoolean(index++, true);
+            }
+            if (clim) {
+                stmt.setBoolean(index++, true);
+            }
+            if (parking) {
+                stmt.setBoolean(index++, true);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Logement logement = new Logement();
+                logement.setId(rs.getInt("id"));
+                logement.setNom(rs.getString("nom"));
+                logement.setDescription(rs.getString("description"));
+                logement.setSuperficie(rs.getInt("superficie"));
+                logement.setNbPersonnesMax(rs.getInt("nb_personnes_max"));
+                logement.setNombreEtoiles(rs.getInt("nombre_etoiles"));
+                logement.setDateCreation(rs.getDate("date_creation"));
+                logement.setHasWifi(rs.getInt("wifi") == 1);
+                logement.setHasClim(rs.getInt("clim") == 1);
+                logement.setHasParking(rs.getInt("parking") == 1);
+                logement.setType(rs.getString("type"));
+                logement.setRue(rs.getString("rue"));
+                logement.setVille(rs.getString("ville"));
+                logement.setCodePostal(rs.getString("code_postal"));
+                logement.setPays(rs.getString("pays"));
+                logement.setDistanceCentre(rs.getInt("distance_centre"));
+
+                logements.add(logement);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return logements;
+    }
+
+
+
 }
