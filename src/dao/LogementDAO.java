@@ -4,7 +4,7 @@ import model.Logement;
 import java.util.List;
 public interface LogementDAO {
     List<Logement> getAllLogementsAvecImages();
-    boolean ajouterLogement(Logement logement);
+    int ajouterLogement(Logement logement);
     boolean modifierLogement(Logement logement);
     List<Logement> getLogementsParVille(String ville);
 

@@ -10,4 +10,5 @@ public interface TarifDAO {
      * @return prix par nuit applicable
      */
     double getPrixParNuit(int logementId);
+    boolean ajouterTarif(int logementId, double prixParNuit);
 }

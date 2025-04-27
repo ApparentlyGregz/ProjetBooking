@@ -67,7 +67,7 @@ public class LogementDAOImpl implements LogementDAO {
 
 
     @Override
-    public boolean ajouterLogement(Logement logement) {
+    public int ajouterLogement(Logement logement) {
         String insertLogementSQL = "INSERT INTO logement (nom, description, superficie, nb_personnes_max, nombre_etoiles, date_creation, wifi, clim, parking, type) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -92,7 +92,7 @@ public class LogementDAOImpl implements LogementDAO {
             stmtLogement.setString(10, logement.getType());
 
             int rows = stmtLogement.executeUpdate();
-            if (rows == 0) return false;
+            if (rows == 0) return -1;
 
             ResultSet generatedKeys = stmtLogement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -121,15 +121,16 @@ public class LogementDAOImpl implements LogementDAO {
                     stmtAdresse.executeUpdate();
                 }
 
-                return true;
+                return logementId; // ✅ Retourner l'ID du logement inséré
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return -1; // ❌ Retourner -1 si échec
     }
+
     @Override
     public boolean modifierLogement(Logement logement) {
         String sqlLogement = "UPDATE logement SET nom=?, description=?, superficie=?, nb_personnes_max=?, nombre_etoiles=?, wifi=?, clim=?, parking=?, type=?, nb_chambres=? WHERE id=?";
