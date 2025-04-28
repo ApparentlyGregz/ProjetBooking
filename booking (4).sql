@@ -367,16 +367,6 @@ légume
 repas
 gâteau
 étoile
-bus
-magasin
-bouteille
-fleur
-rivière
-planète
-pont
-moto
-photo
-village
 pluie
 travail
 feu
