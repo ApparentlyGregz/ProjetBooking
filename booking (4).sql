@@ -436,10 +436,7 @@ photo
 ordinateur
 film
 théâtre
-pain
-bateau
-bateau
-neige
+
 maison
 vent
 musée
