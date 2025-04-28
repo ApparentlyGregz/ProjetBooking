@@ -13,6 +13,7 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     private Connection connection;
 
+    // constructeur qui initialise la connexion a la base de donnees
     public ReservationDAOImpl() {
         try {
             this.connection = Database.getConnection();
@@ -23,6 +24,7 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @Override
     public List<Date> getDatesReserveesPourLogement(int logementId) {
+        // recupere toutes les dates reservees pour un logement
         List<Date> datesReservees = new ArrayList<>();
 
         String sql = "SELECT date_debut, date_fin FROM reservation WHERE logement_id = ? AND statut IN ('confirmée', 'en_attente')";
