@@ -377,12 +377,6 @@ pont
 moto
 photo
 village
-livre
-film
-camion
-étoile
-boisson
-jardin
 pluie
 travail
 feu
