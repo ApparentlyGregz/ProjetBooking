@@ -11,5 +11,7 @@ public interface LogementDAO {
 
     // Ajoute la méthode rechercherLogements
     List<Logement> rechercherLogements(String ville, int nbPersonnes, int nbChambres);
+//Ok
+
 }
 
